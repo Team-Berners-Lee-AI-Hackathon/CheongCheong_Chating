@@ -26,7 +26,7 @@ def _claude_prompt(user_text: str) -> str:
 
 # 사용자 정의 프롬프트 템플릿
 prompt_template = """
-Use the following search results and user detail to answer the user's question:
+Use the following search results and user detail to answer the user's question, 사용자한 질문에 대해 모호한 대답은 하지 말고 확실한 대답만 해. 충분한 시간을 갖고 10번을 생각한 뒤 최선의 답변을 하도록 해: 
 $search_results$
 $user_detail$
 
