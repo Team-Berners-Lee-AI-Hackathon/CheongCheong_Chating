@@ -188,7 +188,7 @@ if not (uid and nid):
                 # "facility_er": has_er,
                 # "facility_mart": has_mart,
                 # 선호 지역
-                "preferred_regions": normalized_preferred_regions,
+                "preferred_regions": set(normalized_preferred_regions),
             }
         )
         st.success(f"✅ 저장 완료! User ID: {uid}")
@@ -227,6 +227,7 @@ else:
             st.markdown(m["content"])
 
     q = st.chat_input("공고에 대해 질문해 보세요…")
+    q.aa
     if q:
         st.session_state.messages.append({"role": "user", "content": q})
         with st.chat_message("user"):
