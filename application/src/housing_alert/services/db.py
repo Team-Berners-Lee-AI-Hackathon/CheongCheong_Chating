@@ -11,19 +11,29 @@ client = dynamodb.meta.client
 
 # ---------- 테이블 보장 ----------
 
-
+# def _ensure_table(table_name: str, key_name: str):
+#     try:
+#         client.describe_table(TableName=table_name)
+#     except client.exceptions.ResourceNotFoundException:
+#         client.create_table(
+#             TableName=table_name,
+#             KeySchema=[{"AttributeName": key_name, "KeyType": "HASH"}],
+#             AttributeDefinitions=[{"AttributeName": key_name, "AttributeType": "S"}],
+#             BillingMode="PAY_PER_REQUEST",
+#         )
+#         dynamodb.Table(table_name).wait_until_exists()
 def _ensure_table(table_name: str, key_name: str):
     try:
-        client.describe_table(TableName=table_name)
-    except client.exceptions.ResourceNotFoundException:
-        client.create_table(
+        dynamodb.create_table(
             TableName=table_name,
             KeySchema=[{"AttributeName": key_name, "KeyType": "HASH"}],
             AttributeDefinitions=[{"AttributeName": key_name, "AttributeType": "S"}],
             BillingMode="PAY_PER_REQUEST",
         )
         dynamodb.Table(table_name).wait_until_exists()
-
+    except client.exceptions.ResourceInUseException:
+        # 테이블이 이미 있으면 여기로 옴 – DescribeTable 없이 통과
+        pass
 
 _ensure_table(settings.USER_TABLE, "user_id")
 _ensure_table(settings.NOTICE_TABLE, "notice_id")
