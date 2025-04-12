@@ -4,9 +4,9 @@ from typing import Dict, Any, Optional
 
 params = st.query_params
 
-user = params.get("user", None)
+user_id = params.get("user_id", None)
 
-notifications: Optional[Dict[str, Any]] = db.get_notifications()
+notifications: Optional[Dict[str, Any]] = db.get_notifications(user_id=user_id)
 
 st.title("공고 알람")
 st.markdown("공고 알람")
