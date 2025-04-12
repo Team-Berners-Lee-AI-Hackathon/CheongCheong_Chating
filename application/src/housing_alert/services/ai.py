@@ -38,7 +38,7 @@ def bedrock_chat(messages: List[Dict[str, str]]) -> str:
 
     try:
         resp = brt.invoke_model(
-            modelId=MODEL_ID,
+            inferenceProfileArn="arn:aws:bedrock:us-east-1:730335373015:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0",
             body=body,
             accept="application/json",
             contentType="application/json",
