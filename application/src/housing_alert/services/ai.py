@@ -60,7 +60,7 @@ def bedrock_chat(user_query: str, user_detail) -> str:
                 "type": "EXTERNAL_SOURCES",
                 "externalSourcesConfiguration": {
                     'externalSourcesConfiguration': {
-                        'modelArn': 'arn:aws:bedrock:us-east-1:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0',
+                        'modelArn': 'arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1:0',
                         'sources': [
                             {
                                 "sourceType": "S3",
