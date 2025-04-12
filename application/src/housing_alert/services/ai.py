@@ -14,9 +14,10 @@ MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-5-sonnet-20240620-v1
 try:
     import boto3
 
+    # Knowledge Bases 클라이언트로 변경
     brt = boto3.client("bedrock-agent-runtime", region_name=BEDROCK_REGION)
 except Exception as e:
-    log.exception("Bedrock client 초기화 실패")
+    log.exception("Bedrock 클라이언트 초기화 실패")
     brt = None
 
 
@@ -28,31 +29,25 @@ def bedrock_chat(user_query: str) -> str:
     if not brt:
         return "[Bedrock 연결 안 됨]"
     
-    body = json.dumps({
-        "input": {
-            "text": user_query
-        },
-        "retrieveAndGenerateConfiguration": {
-            "type": "KNOWLEDGE_BASE",
-            "knowledgeBaseConfiguration": {
-                "knowledgeBaseId": "SUAWIGMKPU",
-                "retrievalConfiguration": {
-                    "vectorSearchConfiguration": {
-                        "numberOfResults": 1
+    try:
+        resp = brt.retrieve_and_generate(
+            input={
+                "text": user_query
+            },
+            retrieveAndGenerateConfiguration={
+                "type": "KNOWLEDGE_BASE",
+                "knowledgeBaseConfiguration": {
+                    "knowledgeBaseId": "SUAWIGMKPU",
+                    "retrievalConfiguration": {
+                        "vectorSearchConfiguration": {
+                            "numberOfResults": 1
+                        }
                     }
                 }
             }
-        }
-    })
-
-    try:
-        resp = brt.retrieve_and_generate(
-            body=body,
-            accept="application/json",
-            contentType="application/json",
         )
         data = json.loads(resp["body"].read())
-        return data.get("content", [{}])[0].get("text", "[빈 응답]")
+        return data.get("output", {}).get("text", "[빈 응답]")
     except Exception as e:
         log.exception("Bedrock Knowledge Base 호출 실패")
         return f"[Bedrock Error] {e}"
