@@ -33,7 +33,7 @@ Question: $question$
 Answer:
 """
 
-def bedrock_chat(user_query: str) -> str:
+def bedrock_chat(user_query: str, user_detail) -> str:
     if not brt:
         return "[Bedrock 연결 안 됨]"
     
