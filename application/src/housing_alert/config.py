@@ -8,11 +8,11 @@ class Settings:
     @property
     @lru_cache(maxsize=1)
     def aws_region(self) -> str:
-        return os.getenv("AWS_REGION", "ap-northeast-2")
+        return os.getenv("AWS_REGION", "us-east-1")
 
     # DynamoDB
-    USER_TABLE: str = os.getenv("DYNAMO_USER_TABLE", "HousingAlertUsers")
-    NOTICE_TABLE: str = os.getenv("DYNAMO_NOTICE_TABLE", "HousingAlertNotices")
+    USER_TABLE: str = os.getenv("DYNAMO_USER_TABLE", "minerva-1-user-info-table")
+    NOTICE_TABLE: str = os.getenv("DYNAMO_NOTICE_TABLE", "minerva-1-pdf-info-table")
 
     # S3
     S3_BUCKET: str = os.getenv("S3_BUCKET", "housing-alert-notices")

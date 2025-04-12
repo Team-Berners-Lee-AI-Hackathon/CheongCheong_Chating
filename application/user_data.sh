@@ -57,9 +57,9 @@ AWS_REGION=us-east-1
 BEDROCK_REGION=us-east-1
 BEDROCK_MODEL_ID=anthropic.claude-v2
 UPSTAGE_API_KEY=replace_me
-S3_BUCKET=housing-alert-notices
-DYNAMO_USER_TABLE=HousingAlertUsers
-DYNAMO_NOTICE_TABLE=HousingAlertNotices
+S3_BUCKET=minerva-1-pdf-bucket 
+DYNAMO_USER_TABLE=minerva-1-user-info-table
+DYNAMO_NOTICE_TABLE=minerva-1-pdf-info-table
 EOF
 
 # Set Poetry to create virtual environments inside the project directory
@@ -67,9 +67,8 @@ export POETRY_VIRTUALENVS_IN_PROJECT=true
 
 # Use the pyenv-installed Python for the Poetry virtual environment
 poetry env use "$(pyenv which python)"
-poetry install --no-root --without dev
+poetry install --no-root
 
-cd /opt/housing-alert/application
 export PYTHONPATH=$PWD/src
 poetry run streamlit run src/housing_alert/streamlit_app.py
 
