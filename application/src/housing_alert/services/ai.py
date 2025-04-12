@@ -14,9 +14,10 @@ MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-5-sonnet-20240620-v1
 try:
     import boto3
 
-    brt = boto3.client("bedrock-runtime", region_name=BEDROCK_REGION)
+    # Knowledge Bases 클라이언트로 변경
+    brt = boto3.client("bedrock-agent-runtime", region_name=BEDROCK_REGION)
 except Exception as e:
-    log.exception("Bedrock client 초기화 실패")
+    log.exception("Bedrock 클라이언트 초기화 실패")
     brt = None
 
 
@@ -24,29 +25,32 @@ def _claude_prompt(user_text: str) -> str:
     return f"\n\nHuman: {user_text}\n\nAssistant:"
 
 
-def bedrock_chat(messages: List[Dict[str, str]]) -> str:
+def bedrock_chat(user_query: str) -> str:
     if not brt:
         return "[Bedrock 연결 안 됨]"
-
-    body = json.dumps({
-        "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 1024,
-        "messages": messages,
-        "temperature": 0.7,
-        "top_p": 0.9,
-    })
-
+    
     try:
-        resp = brt.invoke_model(
-            modelId=MODEL_ID,
-            body=body,
-            accept="application/json",
-            contentType="application/json",
+        resp = brt.retrieve_and_generate(
+            input={
+                "text": user_query
+            },
+            retrieveAndGenerateConfiguration={
+                "type": "KNOWLEDGE_BASE",
+                "knowledgeBaseConfiguration": {
+                    "knowledgeBaseId": "SUAWIGMKPU",
+                    "modelArn": "arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1",
+                    "retrievalConfiguration": {
+                        "vectorSearchConfiguration": {
+                            "numberOfResults": 1
+                        }
+                    }
+                }
+            }
         )
         data = json.loads(resp["body"].read())
-        return data.get("content", [{}])[0].get("text", "[빈 응답]")
+        return data.get("output", {}).get("text", "[빈 응답]")
     except Exception as e:
-        log.exception("Bedrock invoke_model 실패")
+        log.exception("Bedrock Knowledge Base 호출 실패")
         return f"[Bedrock Error] {e}"
 
 
