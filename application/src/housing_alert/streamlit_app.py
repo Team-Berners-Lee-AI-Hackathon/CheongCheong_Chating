@@ -232,7 +232,7 @@ else:
         with st.chat_message("user"):
             st.markdown(q)
 
-        a = ai.bedrock_chat(q)
+        a = ai.bedrock_chat(q, user)
 
         st.session_state.messages.append({"role": "assistant", "content": a})
         with st.chat_message("assistant"):
