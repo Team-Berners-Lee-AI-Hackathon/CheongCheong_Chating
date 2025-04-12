@@ -236,9 +236,9 @@ else:
             
         if "rental_conditions" in notice:
             for condition in notice["rental_conditions"]:
-                if isinstance(condition, dict) and "M" in condition and isinstance(condition["M"], dict):
-                    condition["M"].pop("net_leasable_area", None)
-                    
+                if isinstance(condition, dict) and "net_leasable_area" in condition:
+                    condition.pop("net_leasable_area", None)
+
         print(notice)
 
         # 이후 bedrock_chat을 호출
