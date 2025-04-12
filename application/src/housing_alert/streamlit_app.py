@@ -244,7 +244,7 @@ else:
                 else:
                     filtered_conditions.append(condition)  # 예상치 못한 데이터 구조는 그대로 유지
             notice["rental_conditions"] = filtered_conditions
-
+        print(notice)
         # 이후 bedrock_chat을 호출
         a = ai.bedrock_chat(q, user, notice)
 
