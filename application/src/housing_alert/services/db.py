@@ -29,9 +29,9 @@ def get_user(user_id: str) -> Optional[Dict[str, Any]]:
 
 
 # ---------- Notice ----------
-def get_notice(notice_id: str) -> Optional[Dict[str, Any]]:
+def get_notice(id: str) -> Optional[Dict[str, Any]]:
     try:
-        resp = notice_table.get_item(Key={"notice_id": notice_id})
+        resp = notice_table.get_item(Key={"id": id})
         return resp.get("Item")
     except ClientError as e:
         print("DynamoDB get_notice error", e)
