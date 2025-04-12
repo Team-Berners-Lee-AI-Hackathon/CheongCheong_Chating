@@ -114,7 +114,7 @@ if not (uid and nid):
                         sub_opts.extend([f"{city} {g}" for g in gu_list])
     
                     chosen = st.multiselect(f"  {p}", sub_opts, key=f"ms_{p}")
-                    preferred_regions[p] = chosen[:-1]
+                    preferred_regions[p] = chosen
         else:
             # If provinces_all is a list, simply use a multiselect with the list
             preferred_regions = st.multiselect(
@@ -128,6 +128,14 @@ if not (uid and nid):
             st.error("이메일은 필수입니다.")
             st.stop()
 
+        # 정규화 처리: 사용자가 선택한 각 지역의 끝에 "시"가 있으면 마지막 문자(시)를 제거
+        def remove_trailing_si(text):
+            return text[:-1] if text.endswith("시") else text
+
+        normalized_preferred_regions = {}
+        for prov, region_list in preferred_regions.items():
+            normalized_preferred_regions[prov] = [remove_trailing_si(region) for region in region_list]
+
         uid = str(uuid4())
         db.save_user({
             "user_id": uid,
@@ -135,14 +143,14 @@ if not (uid and nid):
             "birth": birth.isoformat(),
             "gender": gender if gender != "미선택" else None,
             "is_student": is_student,
-            # 경제
+            # 경제 정보
             "monthly_income": int(income),
             "total_assets": int(total_assets),
             "own_house": own_house,
             "own_car": own_car,
             "car_value": int(car_value) if own_car else None,
             "saving_count": int(saving_count),
-            # 거주·선호
+            # 거주·선호 정보
             "residence": residence,
             "preferred_area": int(preferred_area),
             "budget_jeonse": int(budget_jeonse),
@@ -154,12 +162,11 @@ if not (uid and nid):
             "facility_park": has_park,
             "facility_er": has_er,
             "facility_mart": has_mart,
-            # 선호 지역
-            "preferred_regions": preferred_regions,
+            # 선호 지역 (정규화된 데이터)
+            "preferred_regions": normalized_preferred_regions,
         })
         st.success(f"✅ 저장 완료! User ID: {uid}")
         st.stop()
-
 # =================================================
 # 2) Q&A 페이지
 # =================================================
