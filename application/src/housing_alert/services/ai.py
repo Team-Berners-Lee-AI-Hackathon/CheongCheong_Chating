@@ -69,6 +69,9 @@ Instructions:
 Search Results:
 $search_results$
 
+Notice Details:
+$notice_detail$
+
 User Details:
 $user_detail$
 
@@ -78,7 +81,7 @@ $question$
 Answer:
 """
 
-def bedrock_chat(user_query: str, user_detail) -> str:
+def bedrock_chat(user_query: str, user_detail, notice_detail) -> str:
     custom_prompt = prompt_template.format(user_detail=user_detail)
     if not brt:
         return "[Bedrock 연결 안 됨]"
@@ -95,7 +98,7 @@ def bedrock_chat(user_query: str, user_detail) -> str:
                         "vectorSearchConfiguration": {"numberOfResults": 1}
                     },
                     "generationConfiguration": {
-                        "promptTemplate": {"textPromptTemplate": f"{user_detail}+{custom_prompt}"}
+                        "promptTemplate": {"textPromptTemplate": f"{notice_detail}+{user_detail}+{custom_prompt}"}
 
                     }
                 },
