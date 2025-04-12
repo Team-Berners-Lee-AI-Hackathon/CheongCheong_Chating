@@ -128,10 +128,13 @@ if not (uid and nid):
             st.error("이메일은 필수입니다.")
             st.stop()
 
-        normalized_preferred_regions = {}
-        for prov, region_list in preferred_regions.items():
-            # 각 시/도(key)는 그대로 두고, 선택된 지역 값들을 약어 처리하여 리스트로 저장
-            normalized_preferred_regions[prov] = [r[:2] for r in region_list]
+        # Normalize preferred regions: remove the trailing "시" if present.
+        if isinstance(preferred_regions, dict):
+            normalized_preferred_regions = {}
+            for prov, region_list in preferred_regions.items():
+                normalized_preferred_regions[prov] = [r[:-1] if r.endswith("시") else r for r in region_list]
+        else:
+            normalized_preferred_regions = [r[:-1] if r.endswith("시") else r for r in preferred_regions]
         
         print(normalized_preferred_regions)
         uid = str(uuid4())
@@ -161,7 +164,7 @@ if not (uid and nid):
             "facility_er": has_er,
             "facility_mart": has_mart,
             # 선호 지역
-            "preferred_regions": normalization_preferred_regions,
+            "preferred_regions": normalized_preferred_regions,
         })
         st.success(f"✅ 저장 완료! User ID: {uid}")
         st.stop()
