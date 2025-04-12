@@ -41,6 +41,7 @@ provinces = json.loads(pathlib.Path("korea_regions.json").read_text())  # 17개 
 # 1) 등록 페이지
 # =================================================
 if not (uid and nid):
+    
     st.title("🏠 청년 주택청약 알림 – 사용자 등록")
     st.caption("★ 는 필수 입력")
 
@@ -50,9 +51,11 @@ if not (uid and nid):
         with colA:
             email  = st.text_input("★ 이메일", placeholder="you@example.com")
             birth  = st.date_input("★ 생년월일")
+            is_student = st.checkbox("재학 여부")
+            
         with colB:
             gender = st.selectbox("성별 (선택)", ["미선택", "남성", "여성", "기타"])
-            is_student = st.checkbox("현재 대학(원) 재학·휴학 중")
+            family_size = st.number_input("세대 구성원 수", 1, 10, step=1)
 
     # ---------- ② 경제 정보 ----------
     with st.expander("② 경제 정보"):
@@ -60,7 +63,7 @@ if not (uid and nid):
         total_assets  = st.number_input("총 자산(만원)", 0, step=100)
         own_house     = st.radio("주택 보유", ["무주택", "자가 보유"], horizontal=True)
         own_car       = st.checkbox("자가용 보유")
-        car_value     = st.number_input("차량 가액(만원)", 0, step=100, disabled=not own_car)
+        # car_value     = st.number_input("차량 가액(만원)", 0, step=100, disabled=not own_car)
         saving_count  = st.number_input("청약통장 납입 횟수", 0, step=1)
 
     # ---------- ③ 거주·선호 ----------
@@ -71,26 +74,25 @@ if not (uid and nid):
         st.markdown("##### 💰 예산")
         colJ, colR = st.columns(2)
         with colJ:
-            budget_jeonse  = st.number_input("전세 예산(만원)", 0, step=500)
             budget_deposit = st.number_input("보증금(만원)", 0, step=100)
         with colR:
             budget_monthly = st.number_input("월세 예산(만원)", 0, step=5)
 
-        near_subway = st.checkbox("역세권(도보 10분)")
+        # near_subway = st.checkbox("역세권(도보 10분)")
 
     # ---------- ④ 편의시설 ----------
-    with st.expander("④ 근처 편의시설(선택)"):
-        col1, col2 = st.columns(2)
-        with col1:
-            has_gym  = st.checkbox("헬스장")
-            has_park = st.checkbox("공원")
-        with col2:
-            has_er   = st.checkbox("응급실")
-            has_mart = st.checkbox("대형마트")
+    # with st.expander("④ 근처 편의시설(선택)"):
+    #     col1, col2 = st.columns(2)
+    #     with col1:
+    #         has_gym  = st.checkbox("헬스장")
+    #         has_park = st.checkbox("공원")
+    #     with col2:
+    #         has_er   = st.checkbox("응급실")
+    #         has_mart = st.checkbox("대형마트")
 
 
     # ---------- ⑤ 선호 지역(복수 선택) ----------
-    with st.expander("⑤ 선호 지역(복수 선택)", expanded=False):
+    with st.expander("④ 선호 지역(복수 선택)", expanded=False):
         import json, pathlib
         regions_path = pathlib.Path("korea_regions.json")   # ← JSON 경로
         provinces_all = json.loads(regions_path.read_text(encoding="utf-8"))
@@ -149,20 +151,20 @@ if not (uid and nid):
             "total_assets": int(total_assets),
             "own_house": own_house,
             "own_car": own_car,
-            "car_value": int(car_value) if own_car else None,
+            # "car_value": int(car_value) if own_car else None,
             "saving_count": int(saving_count),
             # 거주·선호
             "residence": residence,
             "preferred_area": int(preferred_area),
-            "budget_jeonse": int(budget_jeonse),
             "budget_deposit": int(budget_deposit),
             "budget_monthly": int(budget_monthly),
-            "near_subway": near_subway,
+            "family_size": int(family_size),
+            # "near_subway": near_subway,
             # 편의시설
-            "facility_gym": has_gym,
-            "facility_park": has_park,
-            "facility_er": has_er,
-            "facility_mart": has_mart,
+            # "facility_gym": has_gym,
+            # "facility_park": has_park,
+            # "facility_er": has_er,
+            # "facility_mart": has_mart,
             # 선호 지역
             "preferred_regions": normalized_preferred_regions,
         })
