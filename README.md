@@ -15,11 +15,10 @@ cd "$APP_DIR/application"
 cat > .env <<'EOF'
 AWS_REGION=us-east-1
 BEDROCK_REGION=us-east-1
-BEDROCK_MODEL_ID=anthropic.claude-v2
-UPSTAGE_API_KEY=replace_me
-S3_BUCKET=housing-alert-notices
-DYNAMO_USER_TABLE=HousingAlertUsers
-DYNAMO_NOTICE_TABLE=HousingAlertNotices
+BEDROCK_MODEL_ID=us.anthropic.claude-3-7-sonnet-20250219-v1:0
+S3_BUCKET=minerva-1-pdf-bucket
+DYNAMO_USER_TABLE=minerva-1-user-info-table
+DYNAMO_NOTICE_TABLE=minerva-1-pdf-info-table
 EOF
 
 poetry install
@@ -35,10 +34,9 @@ Configure these via `.env` or system environment variables:
 
 | Variable | Description |
 |----------|-------------|
-| `AWS_REGION` | e.g., `ap-northeast-2` |
+| `AWS_REGION` | e.g., `us-east-1` |
 | `BEDROCK_REGION` | e.g., `us-east-1` |
-| `BEDROCK_MODEL_ID` | e.g., `anthropic.claude-v2` |
-| `UPSTAGE_API_KEY` | Upstage document QA API key |
+| `BEDROCK_MODEL_ID` | e.g., `us.anthropic.claude-3-7-sonnet-20250219-v1:0` |
 | `S3_BUCKET` | S3 bucket for storing PDFs |
 | `DYNAMO_USER_TABLE` | DynamoDB table for users |
 | `DYNAMO_NOTICE_TABLE` | DynamoDB table for notices |
