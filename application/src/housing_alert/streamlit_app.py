@@ -232,8 +232,23 @@ else:
         st.session_state.messages.append({"role": "user", "content": q})
         with st.chat_message("user"):
             st.markdown(q)
+            
+            
+        if "rental_conditions" in notice:
+            filtered_conditions = []
+            for condition in notice["rental_conditions"]:
+                # 각 항목의 "M" 딕셔너리에서 "net_leasable_area"만 제거한 복사본 생성
+                if "M" in condition and isinstance(condition["M"], dict):
+                    m_filtered = { key: value for key, value in condition["M"].items() if key != "net_leasable_area" }
+                    filtered_conditions.append({"M": m_filtered})
+                else:
+                    filtered_conditions.append(condition)  # 예상치 못한 데이터 구조는 그대로 유지
+            notice["rental_conditions"] = filtered_conditions
 
+        # 이후 bedrock_chat을 호출
         a = ai.bedrock_chat(q, user, notice)
+
+        # a = ai.bedrock_chat(q, user, notice)
 
         st.session_state.messages.append({"role": "assistant", "content": a})
         with st.chat_message("assistant"):
