@@ -27,9 +27,9 @@ def _claude_prompt(user_text: str) -> str:
 # 사용자 정의 프롬프트 템플릿
 prompt_template = """
 Use the following search results to answer the user's question:
-{{searchresults}}
+$search_results$
 
-Question: {{question}}
+Question: $question$
 Answer:
 """
 
