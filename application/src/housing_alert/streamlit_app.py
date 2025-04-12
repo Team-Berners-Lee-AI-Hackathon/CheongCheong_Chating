@@ -188,12 +188,12 @@ else:
         
     st.title(f"🏠 {notice.get('notice_name','청약 공고')} – Q&A")
 
-    if notice.get("notice_s3"):
-        url = storage.create_presigned_url(notice["notice_s3"])
-        st.markdown(f"[📄 PDF 다운로드]({url})")
+    # if notice.get("notice_s3"):
+    #     url = storage.create_presigned_url(notice["notice_s3"])
+    #     st.markdown(f"[📄 PDF 다운로드]({url})")
 
     if notice.get("notice_url"):
-        st.markdown(f"[🌐 원문 보기]({notice['notice_url']})")
+        st.markdown(f"[🌐 공고 보기]({notice['notice_url']})")
 
     st.divider()
     if "messages" not in st.session_state:
