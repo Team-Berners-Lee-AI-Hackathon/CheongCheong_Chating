@@ -144,7 +144,7 @@ if not (uid and nid):
             "saving_count": int(saving_count),
             # 거주·선호
             "residence": residence,
-            "preferred_area": float(preferred_area),
+            "preferred_area": int(preferred_area),
             "budget_jeonse": int(budget_jeonse),
             "budget_deposit": int(budget_deposit),
             "budget_monthly": int(budget_monthly),
