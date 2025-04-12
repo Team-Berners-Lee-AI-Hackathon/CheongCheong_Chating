@@ -54,6 +54,7 @@ UPSTAGE_API_KEY=replace_me
 S3_BUCKET=minerva-1-pdf-bucket
 DYNAMO_USER_TABLE=minerva-1-user-info-table
 DYNAMO_NOTICE_TABLE=minerva-1-pdf-info-table
+DYNAMO_NOTIFICATION_TABLE=minerva-1-notification-table
 EOF
 
 # Set Poetry to create virtual environments inside the project directory

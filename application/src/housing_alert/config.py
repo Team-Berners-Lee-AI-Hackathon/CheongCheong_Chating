@@ -13,6 +13,7 @@ class Settings:
     # DynamoDB
     USER_TABLE: str = os.getenv("DYNAMO_USER_TABLE", "minerva-1-user-info-table")
     NOTICE_TABLE: str = os.getenv("DYNAMO_NOTICE_TABLE", "minerva-1-pdf-info-table")
+    NOTIFICATION_TABLE: str = os.getenv("DYNAMO_NOTIFICATION_TABLE", "minerva-1-notification-table")
 
     # S3
     S3_BUCKET: str = os.getenv("S3_BUCKET", "housing-alert-notices")
