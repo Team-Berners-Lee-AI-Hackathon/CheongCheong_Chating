@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 # ---------- Bedrock ---------- #
 # BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
 BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
-MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-5-sonnet-20240620-v1:0"
+MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-7-sonnet-20250219-v1:0"
 
 try:
     import boto3
@@ -101,55 +101,11 @@ def bedrock_chat(user_query: str, user_detail, notice_detail) -> str:
                         "promptTemplate": {"textPromptTemplate": f"{notice_detail}+{user_detail}+{custom_prompt}"}
 
                     }
-                },
-            },
-            # retrieveAndGenerateConfiguration={
-            #     "type": "EXTERNAL_SOURCES",
-            #     "externalSourcesConfiguration": {
-            #         'modelArn': 'arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1:0',
-            #         'sources': [
-            #             {
-            #                 "sourceType": "S3",
-            #                 "s3Location": {
-            #                     "uri": "s3://minerva-1-pdf-bucket/b6483633-2e88-4cff-a216-90d482067340.pdf"
-            #                 }
-            #             }
-            #         ]
-            #     }
-            # },
-            # modelArn=f"arn:aws:bedrock:{BEDROCK_REGION}:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
-            # modelArn=f"arn:aws:bedrock:{BEDROCK_REGION}:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
+                }
+            }
         )
         print(f"resp => {resp}")
         return resp.get("output", {}).get("text", "[빈 응답]")
     except Exception as e:
         log.exception("Bedrock Knowledge Base 호출 실패")
         return f"[Bedrock Error] {e}"
-
-
-# ---------- Upstage ---------- #
-UPSTAGE_QA_URL = os.getenv("UPSTAGE_QA_ENDPOINT", "https://api.upstage.ai/v1/qa")
-
-
-def upstage_qa(document: str, question: str) -> str:
-    """Upstage 문서 QA – 예외·404 시 에러 문자열 반환."""
-    if not settings.UPSTAGE_API_KEY:
-        return "[Upstage Error] API KEY 미설정"
-
-    headers = {"Authorization": f"Bearer {settings.UPSTAGE_API_KEY}"}
-    try:
-        resp = requests.post(
-            UPSTAGE_QA_URL,
-            json={"document": document, "question": question},
-            headers=headers,
-            timeout=30,
-        )
-        if resp.status_code == 404:
-            msg = "404 page not found"
-            log.error("Upstage 404: %s", msg)
-            return f"[Upstage Error] {msg}"
-        resp.raise_for_status()
-        return resp.json().get("answer", "[Upstage Error] 빈 응답")
-    except Exception as e:
-        log.exception("Upstage QA 호출 실패")
-        return f"[Upstage Error] {e}"

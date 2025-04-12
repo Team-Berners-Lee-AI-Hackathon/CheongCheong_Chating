@@ -37,13 +37,3 @@ def get_notice(id: str) -> Optional[Dict[str, Any]]:
     except ClientError as e:
         print("DynamoDB get_notice error", e)
         return None
-
-
-# ---------- Notice ----------
-def get_notifications(user_id: str) -> Optional[Dict[str, Any]]:
-    try:
-        resp = notification_table.get_item(Key={"user_id": user_id})
-        return resp.get("Item")
-    except ClientError as e:
-        print("DynamoDB get_notifications error", e)
-        return None
