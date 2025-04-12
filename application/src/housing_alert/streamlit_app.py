@@ -36,7 +36,7 @@ nid = params.get("id", None)
 # provinces = {"서울특별시": ["강남구","강동구",...], "경기도": ["수원시","성남시",...], ...}
 import json, pathlib
 provinces = json.loads(pathlib.Path("korea_regions.json").read_text())  # 17개 시·도 · 250여 시·군·구
-print(provinces)
+# print(provinces)
 # =================================================
 # 1) 등록 페이지
 # =================================================
@@ -127,11 +127,13 @@ if not (uid and nid):
         if not email:
             st.error("이메일은 필수입니다.")
             st.stop()
+
+        normalized_preferred_regions = {}
+        for prov, region_list in preferred_regions.items():
+            # 각 시/도(key)는 그대로 두고, 선택된 지역 값들을 약어 처리하여 리스트로 저장
+            normalized_preferred_regions[prov] = [r[:2] for r in region_list]
         
-        normalization_preferred_regions = []
-        for preferred_region in preferred_regions:
-            normalization_preferred_regions.insert(0, preferred_region)
-            
+        print(normalized_preferred_regions)
         uid = str(uuid4())
         db.save_user({
             "user_id": uid,
