@@ -130,7 +130,7 @@ if not (uid and nid):
 
         # 정규화 처리: 사용자가 선택한 각 지역의 끝에 "시"가 있으면 마지막 문자(시)를 제거
         def remove_trailing_si(text):
-            return text[:-1] if text.endswith("시") else text
+            return text[:-1]
 
         normalized_preferred_regions = {}
         for prov, region_list in preferred_regions.items():
