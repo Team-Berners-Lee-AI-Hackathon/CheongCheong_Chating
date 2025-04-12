@@ -190,8 +190,7 @@ else:
         st.session_state.messages.append({"role":"user","content":q})
         with st.chat_message("user"): st.markdown(q)
 
-        a = ai.upstage_qa(notice.get("ocr_text",""), q) \
-            or ai.bedrock_chat([{"role":"user","content":q}])
+        a = ai.bedrock_chat([{"role":"user","content":q}])
 
         st.session_state.messages.append({"role":"assistant","content":a})
         with st.chat_message("assistant"): st.markdown(a)
