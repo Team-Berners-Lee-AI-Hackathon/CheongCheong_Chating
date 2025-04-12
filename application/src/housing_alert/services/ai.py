@@ -59,17 +59,15 @@ def bedrock_chat(user_query: str, user_detail) -> str:
             retrieveAndGenerateConfiguration={
                 "type": "EXTERNAL_SOURCES",
                 "externalSourcesConfiguration": {
-                    'externalSourcesConfiguration': {
-                        'modelArn': 'arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1:0',
-                        'sources': [
-                            {
-                                "sourceType": "S3",
-                                "s3Location": {
-                                    "uri": "s3://minerva-1-pdf-bucket/b6483633-2e88-4cff-a216-90d482067340.pdf"
-                                }
+                    'modelArn': 'arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1:0',
+                    'sources': [
+                        {
+                            "sourceType": "S3",
+                            "s3Location": {
+                                "uri": "s3://minerva-1-pdf-bucket/b6483633-2e88-4cff-a216-90d482067340.pdf"
                             }
-                        ]
-                    }
+                        }
+                    ]
                 }
             },
             # modelArn=f"arn:aws:bedrock:{BEDROCK_REGION}:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
