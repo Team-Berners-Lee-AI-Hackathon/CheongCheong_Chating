@@ -236,9 +236,8 @@ else:
             
         if "rental_conditions" in notice:
             for condition in notice["rental_conditions"]:
-                # condition이 딕셔너리이고 'net_leasable_area' 키가 있다면 삭제
-                if isinstance(condition, dict) and "net_leasable_area" in condition:
-                    condition.pop("net_leasable_area")
+                if isinstance(condition, dict) and "M" in condition and isinstance(condition["M"], dict):
+                    condition["M"].pop("net_leasable_area", None)
                     
         print(notice)
 
