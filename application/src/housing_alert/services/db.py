@@ -9,12 +9,15 @@ from housing_alert.config import settings
 dynamodb = boto3.resource("dynamodb", region_name=settings.aws_region)
 
 # ★ no DescribeTable / CreateTable – just reference existing tables
-user_table   = dynamodb.Table(settings.USER_TABLE)
+user_table = dynamodb.Table(settings.USER_TABLE)
 notice_table = dynamodb.Table(settings.NOTICE_TABLE)
+notification_table = dynamodb.Table(settings.NOTIFICATION_TABLE)
+
 
 # ---------- User ----------
 def save_user(user: Dict[str, Any]) -> None:
     user_table.put_item(Item=user)
+
 
 def get_user(user_id: str) -> Optional[Dict[str, Any]]:
     try:
@@ -23,6 +26,7 @@ def get_user(user_id: str) -> Optional[Dict[str, Any]]:
     except ClientError as e:
         print("DynamoDB get_user error", e)
         return None
+
 
 # ---------- Notice ----------
 def get_notice(notice_id: str) -> Optional[Dict[str, Any]]:
@@ -33,6 +37,12 @@ def get_notice(notice_id: str) -> Optional[Dict[str, Any]]:
         print("DynamoDB get_notice error", e)
         return None
 
+
 # ---------- Notice ----------
 def get_notifications(user_id: str) -> Optional[Dict[str, Any]]:
-    pass
+    try:
+        resp = notification_table.get_item(Key={"user_id": user_id})
+        return resp.get("Item")
+    except ClientError as e:
+        print("DynamoDB get_notifications error", e)
+        return None
