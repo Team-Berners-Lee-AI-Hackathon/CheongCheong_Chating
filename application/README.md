@@ -1,5 +1,9 @@
-#TODO
-- [ ] 1인 가구인지 -> 아니면 가족 구성원이 몇명인지
-cd /opt/housing-alert/application
-export PYTHONPATH=$PWD/src
-poetry run streamlit run src/housing_alert/streamlit_app.py
+# Start Application
+
+```shell
+APP_DIR=/opt/housing-alert
+git clone https://github.com/Team-Berners-Lee-AI-Hackathon/CheongCheong_Chating.git "$APP_DIR"
+cd "$APP_DIR/application"
+bash application_python_init.sh
+bash start.sh
+```
