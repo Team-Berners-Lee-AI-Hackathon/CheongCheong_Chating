@@ -200,6 +200,7 @@ if not (uid and nid):
 else:
     user = db.get_user(uid)
     notice = db.get_notice(nid)
+    
     if not user:
         log.warning("User not found  uid=%s", uid)
     if not notice:

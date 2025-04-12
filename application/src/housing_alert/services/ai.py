@@ -25,8 +25,36 @@ def _claude_prompt(user_text: str) -> str:
     return f"\n\nHuman: {user_text}\n\nAssistant:"
 
 # 사용자 정의 프롬프트 템플릿
+# prompt_template = """
+# Use the following search results and user detail to answer the user's question, 사용자한 질문에 대해 모호한 대답은 하지 말고 확실한 대답만 해. 충분한 시간을 갖고 10번을 생각한 뒤 최선의 답변을 하도록 해, : 
+# $search_results$
+# $user_detail$
+
+# Question: $question$
+# Answer:
+# """
+
 prompt_template = """
-Use the following search results and user detail to answer the user's question, 사용자한 질문에 대해 모호한 대답은 하지 말고 확실한 대답만 해. 충분한 시간을 갖고 10번을 생각한 뒤 최선의 답변을 하도록 해: 
+Use the following search results and user detail to answer the user's question, 대답할 때 참고할만한 정보를 
+1. user_detail 각 키값에 대한 정보는 다음과 같아
+- birth = 유저 생년월일
+- budget_monthly = 지불가능한 최대 월세
+- family_size = 세대 구성원(명)
+- is_student = 재학 여부
+- max_deposit = 지불가능한 최대 보증금액
+- monthly_income = 사용자의 월 소득금액
+- own_car = 차량 소유 여부
+- own_house = 주택 소유 여부
+- preferred_area = 선호하는 면적 (m^2)
+- perferred_region = 선호하는 지역들
+- residence = 현재 거주지
+- saving_count = 청약 납입 횟수
+- total_assets = 현재 보유중인 자산: 
+2. 사용자한 질문에 대해 모호한 대답은 하지 말고 확실한 대답만 해 
+3. 충분한 시간을 갖고 10번을 생각한 뒤 최선의 답변을 하도록 해
+4. 너는 청약 심사관이야
+5. 사용자의 정보와 청약공고의 정보에 대해 연구하고 조사한 뒤, 확실하게 비교해줘
+:
 $search_results$
 $user_detail$
 
