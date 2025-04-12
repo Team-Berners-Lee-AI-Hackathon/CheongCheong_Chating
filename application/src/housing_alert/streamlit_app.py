@@ -178,7 +178,7 @@ if not (uid and nid):
                 # 거주·선호
                 "residence": residence,
                 "preferred_area": int(preferred_area),
-                "budget_deposit": int(budget_deposit),
+                "max_deposit": int(budget_deposit),
                 "budget_monthly": int(budget_monthly),
                 "family_size": int(family_size),
                 # "near_subway": near_subway,
