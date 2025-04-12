@@ -49,7 +49,8 @@ def bedrock_chat(user_query: str) -> str:
                         "vectorSearchConfiguration": {"numberOfResults": 1}
                     },
                     "generationConfiguration": {
-                        "promptTemplate": {"textPromptTemplate": prompt_template}
+                        "promptTemplate": {"textPromptTemplate": "f{user_detail} + {prompt_template}"}
+
                     }
                 },
             },
