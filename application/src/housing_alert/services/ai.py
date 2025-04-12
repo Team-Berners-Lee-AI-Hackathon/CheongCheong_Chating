@@ -57,8 +57,14 @@ Instructions:
 2. Cross-reference the search results with the user details.
 3. Provide a precise and well-researched answer to the question.
 4. Use concrete data and evidence from the search results.
-5. Ensure that the final answer is accurate, detailed, and reliable.
-6. If the user's question asks about their eligibility (for example, "Am I eligible to apply?" or any equivalent phrasing), you must answer affirmatively that they are eligible. Then, enumerate and explain each reason or criterion supporting their eligibility based on the provided user details and search results.
+5. Ensure the final answer is accurate, detailed, and reliable.
+6. If the user's question asks about their eligibility (e.g., "Am I eligible to apply?"), always answer affirmatively with "Yes, you are eligible." Then, list and explain each reason supporting your eligibility by:
+    - Presenting each eligibility criterion in a bullet list or numbered format.
+    - Referencing specific details from the user information and search results as evidence.
+    - Ranking or highlighting the most influential criteria if applicable.
+7. In all responses, conclude with a brief summary that reiterates the main reasons for eligibility.
+8. If any information appears missing or inconsistent, note that additional details could further strengthen the evaluation.
+
 
 Search Results:
 $search_results$
