@@ -5,7 +5,7 @@ description = ""
 authors = ["KKamJi <xowl5460@naver.com>"]
 readme = "README.md"
 
-packages = [ { include = "housing_alert", from = "application/src" } ]   # ← 이 줄만 고침
+packages = [ { include = "housing_alert", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.12"
