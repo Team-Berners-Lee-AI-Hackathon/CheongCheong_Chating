@@ -1,7 +1,26 @@
 """Streamlit entrypoint – Housing Alert AI (clean UI)"""
 import streamlit as st
 from uuid import uuid4
+import logging, logging.handlers, os, json, pathlib
+
 from housing_alert.services import db, storage, ai
+
+import logging
+import logging.handlers
+import os
+
+# ─────────── 로깅 설정 (파일 + 콘솔) ───────────
+LOG_FILE = "/var/log/hackathon_app.log"
+os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.handlers.RotatingFileHandler(LOG_FILE, maxBytes=5*1024*1024, backupCount=3),
+        logging.StreamHandler()
+    ],
+)
+log = logging.getLogger("hackerton_app")
 
 # ────────────────────────────────────────────────
 st.set_page_config(page_title="Housing Alert", page_icon="🏠",
@@ -9,8 +28,8 @@ st.set_page_config(page_title="Housing Alert", page_icon="🏠",
 
 # ------------------ Query params ----------------
 params = st.query_params
-uid  = params.get("user_id", [None])[0]
-nid  = params.get("id", [None])[0]
+uid  = params.get("user_id", [None])
+nid  = params.get("id", [None])
 # ------------------------------------------------
 
 # 전국 시·군·구 사전 예시 ─ 실제 서비스에선 S3·로컬 JSON 로드 권장
@@ -141,10 +160,15 @@ if not (uid and nid):
 else:
     user   = db.get_user(uid)
     notice = db.get_notice(nid)
+    if not user:
+        log.warning("User not found  uid=%s", uid)
+    if not notice:
+        log.warning("Notice not found  nid=%s", nid)
+
     if not (user and notice):
         st.error("사용자 또는 공고 정보를 찾을 수 없습니다.")
         st.stop()
-
+        
     st.title(f"🏠 {notice.get('title','청약 공고')} – Q&A")
 
     if notice.get("pdf_s3_key"):
