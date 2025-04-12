@@ -8,7 +8,22 @@ Get alerts only for the applications you're eligible for, and ask questions usin
 ## 🚀 Quick Start
 
 ```bash
+APP_DIR=/opt/housing-alert
+git clone https://github.com/Team-Berners-Lee-AI-Hackathon/CheongCheong_Chating.git "$APP_DIR"
+cd "$APP_DIR/application"
+
+cat > .env <<'EOF'
+AWS_REGION=us-east-1
+BEDROCK_REGION=us-east-1
+BEDROCK_MODEL_ID=anthropic.claude-v2
+UPSTAGE_API_KEY=replace_me
+S3_BUCKET=housing-alert-notices
+DYNAMO_USER_TABLE=HousingAlertUsers
+DYNAMO_NOTICE_TABLE=HousingAlertNotices
+EOF
+
 poetry install
+export PYTHONPATH=$PWD/src
 poetry run streamlit run src/housing_alert/streamlit_app.py
 ```
 
