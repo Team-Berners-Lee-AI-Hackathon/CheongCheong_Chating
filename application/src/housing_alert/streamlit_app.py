@@ -169,8 +169,8 @@ if not (uid and nid):
                 "gender": gender if gender != "미선택" else None,
                 "is_student": is_student,
                 # 경제
-                "monthly_income": int(income),
-                "total_assets": int(total_assets),
+                "monthly_income": int(income)*10000,
+                "total_assets": int(total_assets)*10000,
                 "own_house": own_house,
                 "own_car": own_car,
                 # "car_value": int(car_value) if own_car else None,
@@ -178,8 +178,8 @@ if not (uid and nid):
                 # 거주·선호
                 "residence": residence,
                 "preferred_area": int(preferred_area),
-                "max_deposit": int(budget_deposit),
-                "budget_monthly": int(budget_monthly),
+                "max_deposit": int(budget_deposit)*10000,
+                "budget_monthly": int(budget_monthly)*10000,
                 "family_size": int(family_size),
                 # "near_subway": near_subway,
                 # 편의시설
