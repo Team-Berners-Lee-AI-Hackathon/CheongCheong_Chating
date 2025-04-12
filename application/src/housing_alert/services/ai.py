@@ -28,24 +28,20 @@ def _claude_prompt(user_text: str) -> str:
 def bedrock_chat(user_query: str) -> str:
     if not brt:
         return "[Bedrock 연결 안 됨]"
-    
+
     try:
         resp = brt.retrieve_and_generate(
-            input={
-                "text": user_query
-            },
+            input={"text": user_query},
             retrieveAndGenerateConfiguration={
                 "type": "KNOWLEDGE_BASE",
                 "knowledgeBaseConfiguration": {
                     "knowledgeBaseId": "SUAWIGMKPU",
                     "modelArn": "arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1",
                     "retrievalConfiguration": {
-                        "vectorSearchConfiguration": {
-                            "numberOfResults": 1
-                        }
-                    }
-                }
-            }
+                        "vectorSearchConfiguration": {"numberOfResults": 1}
+                    },
+                },
+            },
         )
         data = json.loads(resp["body"].read())
         return data.get("output", {}).get("text", "[빈 응답]")
