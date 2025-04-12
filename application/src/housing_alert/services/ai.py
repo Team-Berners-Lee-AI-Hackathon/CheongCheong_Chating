@@ -26,14 +26,16 @@ def _claude_prompt(user_text: str) -> str:
 
 # 사용자 정의 프롬프트 템플릿
 prompt_template = """
-Use the following search results to answer the user's question:
+Use the following search results and user detail to answer the user's question:
 $search_results$
+$user_detail$
 
 Question: $question$
 Answer:
 """
 
 def bedrock_chat(user_query: str, user_detail) -> str:
+    custom_prompt = prompt_template.format(user_detail=user_detail)
     if not brt:
         return "[Bedrock 연결 안 됨]"
     
@@ -49,7 +51,7 @@ def bedrock_chat(user_query: str, user_detail) -> str:
                         "vectorSearchConfiguration": {"numberOfResults": 1}
                     },
                     "generationConfiguration": {
-                        "promptTemplate": {"textPromptTemplate": f"{user_detail} + {prompt_template}"}
+                        "promptTemplate": {"textPromptTemplate": custom_prompt}
 
                     }
                 },
