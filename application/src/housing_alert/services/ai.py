@@ -58,8 +58,7 @@ def bedrock_chat(user_query: str, user_detail) -> str:
             },
         )
         print(f"resp => {resp}")
-        data = json.loads(resp.get('body').read())
-        return data.get("output", {}).get("text", "[빈 응답]")
+        return resp.get("output", {}).get("text", "[빈 응답]")
     except Exception as e:
         log.exception("Bedrock Knowledge Base 호출 실패")
         return f"[Bedrock Error] {e}"
