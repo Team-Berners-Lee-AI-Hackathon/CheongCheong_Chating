@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "upstage-ai-hackerton"
+version = "0.1.0"
+description = ""
+authors = ["KKamJi <xowl5460@naver.com>"]
+readme = "README.md"
+
+packages = [ { include = "housing_alert", from = "src" } ]   # ← 이 줄만 고침
+
+[tool.poetry.dependencies]
+python = "^3.12"
+boto3 = "^1.37.30"
+streamlit = "^1.44.1"
+requests = "^2.32.3"
+python-dotenv = "^1.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
