@@ -42,7 +42,7 @@ def bedrock_chat(user_query: str) -> str:
                     },
                     "generationConfiguration": {
                         "promptTemplate": {
-                            "textPromptTemplate": "You are a helpful assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.\n\nContext: {context}\n\nQuestion: {question}\n\nAnswer:"
+                            "textPromptTemplate": "You are a helpful assistant. Answer the question based on the following search results. If the search results don't contain the answer, just say that you don't know.\n\nSearch Results: {searchResults}\n\nQuestion: {question}\n\nAnswer:"
                         }
                     }
                 },
