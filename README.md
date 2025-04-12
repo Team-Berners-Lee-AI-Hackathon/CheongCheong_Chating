@@ -70,6 +70,7 @@ Configure these via `.env` or system environment variables:
 ## 🛠️ Tech Stack
 
 - Python + Streamlit + Poetry
+- Python + Selenium Crawling
 - AWS Bedrock, S3, DynamoDB
 - Upstage Document QA API
 - OCR preprocessing (external service)
