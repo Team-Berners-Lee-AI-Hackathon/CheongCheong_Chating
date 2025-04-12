@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 # ---------- Bedrock ---------- #
 # BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
 BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
-MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-7-sonnet-20250219-v1:0"
+MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-5-sonnet-20240620-v1:0"
 
 try:
     import boto3
@@ -38,7 +38,7 @@ def bedrock_chat(messages: List[Dict[str, str]]) -> str:
 
     try:
         resp = brt.invoke_model(
-            inferenceProfileArn="arn:aws:bedrock:us-east-1:730335373015:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+            modelId=MODEL_ID,
             body=body,
             accept="application/json",
             contentType="application/json",
