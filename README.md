@@ -36,11 +36,11 @@ Configure these via `.env` or system environment variables:
 
 ### User Registration  
 
-![user](main.png)
+![user](images/main.png)
 
 ### Housing Notice Chat (Q&A)  
 
-![chat](chatting.png)
+![chat](images/chatting.png)
 
 ---
 
