@@ -28,7 +28,7 @@ def _claude_prompt(user_text: str) -> str:
 def bedrock_chat(user_query: str) -> str:
     if not brt:
         return "[Bedrock 연결 안 됨]"
-
+    
     try:
         resp = brt.retrieve_and_generate(
             input={"text": user_query},
@@ -36,10 +36,15 @@ def bedrock_chat(user_query: str) -> str:
                 "type": "KNOWLEDGE_BASE",
                 "knowledgeBaseConfiguration": {
                     "knowledgeBaseId": "SUAWIGMKPU",
-                    #"modelArn": "arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1",
+                    "modelArn": "arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1",
                     "retrievalConfiguration": {
                         "vectorSearchConfiguration": {"numberOfResults": 1}
                     },
+                    "generationConfiguration": {
+                        "promptTemplate": {
+                            "textPromptTemplate": "You are a helpful assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.\n\nContext: {context}\n\nQuestion: {question}\n\nAnswer:"
+                        }
+                    }
                 },
             },
         )
