@@ -169,7 +169,7 @@ else:
         st.error("사용자 또는 공고 정보를 찾을 수 없습니다.")
         st.stop()
         
-    st.title(f"🏠 {notice.get('title','청약 공고')} – Q&A")
+    st.title(f"🏠 {notice.get('notice_name','청약 공고')} – Q&A")
 
     if notice.get("pdf_s3_key"):
         url = storage.create_presigned_url(notice["pdf_s3_key"])
