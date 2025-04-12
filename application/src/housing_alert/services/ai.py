@@ -57,6 +57,7 @@ def bedrock_chat(user_query: str, user_detail) -> str:
                 },
             },
         )
+        print(resp)
         data = json.loads(resp["body"].read())
         return data.get("output", {}).get("text", "[빈 응답]")
     except Exception as e:

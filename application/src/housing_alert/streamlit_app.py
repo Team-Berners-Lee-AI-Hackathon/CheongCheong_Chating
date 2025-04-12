@@ -159,7 +159,7 @@ if not (uid and nid):
                 r[:-1] if r.endswith("시") else r for r in preferred_regions
             ]
 
-        print(normalized_preferred_regions)
+        # print(normalized_preferred_regions)
         uid = str(uuid4())
         db.save_user(
             {
