@@ -3,9 +3,13 @@
 A smart notifier for youth housing applications.  
 Get alerts only for the applications you're eligible for, and ask questions using GenAI Bedrock.
 
-## Demo Images
+## Demo Image (User Input)
 
 ![UserInput](imgs/user_input_demo.png)
+
+---
+
+## Demo Image (Chatting)
 
 ![Chatting](imgs/chatting_demo.png)
 
