@@ -149,7 +149,6 @@ if not (uid and nid):
             "facility_mart": has_mart,
             # 선호 지역
             "preferred_regions": preferred_regions,
-            "preferred_provinces": selected_provinces,
         })
         st.success(f"✅ 저장 완료! User ID: {uid}")
         st.stop()
