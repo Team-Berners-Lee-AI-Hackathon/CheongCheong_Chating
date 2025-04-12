@@ -114,7 +114,7 @@ if not (uid and nid):
                         sub_opts.extend([f"{city} {g}" for g in gu_list])
     
                     chosen = st.multiselect(f"  {p}", sub_opts, key=f"ms_{p}")
-                    preferred_regions[p] = chosen
+                    preferred_regions[p] = chosen[0:-1]
         else:
             # If provinces_all is a list, simply use a multiselect with the list
             preferred_regions = st.multiselect(
@@ -155,7 +155,7 @@ if not (uid and nid):
             "facility_er": has_er,
             "facility_mart": has_mart,
             # 선호 지역
-            "preferred_regions": preferred_regions[0:2],
+            "preferred_regions": preferred_regions,
         })
         st.success(f"✅ 저장 완료! User ID: {uid}")
         st.stop()
