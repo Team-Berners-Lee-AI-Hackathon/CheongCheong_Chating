@@ -49,11 +49,11 @@ ln -s /usr/local/poetry/bin/poetry /usr/local/bin/poetry
 ### 5. App deploy
 APP_DIR=/opt/housing-alert
 git clone https://github.com/Team-Berners-Lee-AI-Hackathon/CheongCheong_Chating.git "$APP_DIR"
-cd "$APP_DIR"
+cd "$APP_DIR/application"
 
 # Create .env file with example configuration (replace actual values or inject via SSM)
 cat > .env <<'EOF'
-AWS_REGION=ap-northeast-2
+AWS_REGION=us-east-1
 BEDROCK_REGION=us-east-1
 BEDROCK_MODEL_ID=anthropic.claude-v2
 UPSTAGE_API_KEY=replace_me
@@ -69,27 +69,8 @@ export POETRY_VIRTUALENVS_IN_PROJECT=true
 poetry env use "$(pyenv which python)"
 poetry install --no-root --without dev
 
-### 6. systemd unit configuration (Service registration)
-cat > /etc/systemd/system/housing-alert.service <<'SERVICE'
-[Unit]
-Description=Housing Alert AI (Streamlit)
-After=network.target
-
-[Service]
-Type=simple
-User=root
-WorkingDirectory=/opt/housing-alert
-Environment="PYTHONPATH=/opt/housing-alert/application/src"
-EnvironmentFile=/opt/housing-alert/.env
-ExecStart=/opt/housing-alert/.venv/bin/streamlit run application/src/housing_alert/streamlit_app.py --server.port 8501 --server.headless true
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-SERVICE
-
-systemctl daemon-reload
-systemctl enable --now housing-alert.service
+cd /opt/housing-alert/application
+export PYTHONPATH=$PWD/src
+poetry run streamlit run src/housing_alert/streamlit_app.py
 
 echo "Setup complete. App running on port 8501 (Python 3.12 via pyenv and pyenv-virtualenv)."

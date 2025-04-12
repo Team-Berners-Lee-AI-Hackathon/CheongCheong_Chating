@@ -6,4 +6,7 @@
   - [ ] 공원
   - [ ] 응급실
   - [ ] 대형마트
-  - [ ] 
+
+cd /opt/housing-alert/application
+export PYTHONPATH=$PWD/src
+poetry run streamlit run src/housing_alert/streamlit_app.py
