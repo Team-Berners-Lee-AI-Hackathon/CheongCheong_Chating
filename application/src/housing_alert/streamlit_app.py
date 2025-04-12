@@ -227,7 +227,6 @@ else:
             st.markdown(m["content"])
 
     q = st.chat_input("공고에 대해 질문해 보세요…")
-    q.aa
     if q:
         st.session_state.messages.append({"role": "user", "content": q})
         with st.chat_message("user"):
