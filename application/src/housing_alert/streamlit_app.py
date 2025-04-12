@@ -36,7 +36,7 @@ nid = params.get("id", None)
 # provinces = {"서울특별시": ["강남구","강동구",...], "경기도": ["수원시","성남시",...], ...}
 import json, pathlib
 provinces = json.loads(pathlib.Path("korea_regions.json").read_text())  # 17개 시·도 · 250여 시·군·구
-
+print(provinces)
 # =================================================
 # 1) 등록 페이지
 # =================================================
@@ -88,33 +88,40 @@ if not (uid and nid):
             has_er   = st.checkbox("응급실")
             has_mart = st.checkbox("대형마트")
 
-    # ---------- ⑤ 선호 지역(다중) ----------
+
+    # ---------- ⑤ 선호 지역(복수 선택) ----------
     with st.expander("⑤ 선호 지역(복수 선택)", expanded=False):
-        # ❶ 전국 시·도·군·구 로드
         import json, pathlib
         regions_path = pathlib.Path("korea_regions.json")   # ← JSON 경로
-        provinces_all = json.loads(regions_path.read_text())
-
-        # ❷ 시·도 다중 선택
-        selected_provinces = st.multiselect(
-            "선호 시/도 선택 (다중)",
-            list(provinces_all.keys()),
-            placeholder="예: 서울특별시, 경기도 …",
-        )
-
-        # ❸ 시/군/구 다중 선택 (선택된 시·도에 대해)
-        preferred_regions = {}
-        if selected_provinces:
-            st.markdown("##### 세부 시·군·구 선택")
-            for p in selected_provinces:
-                sub_opts = provinces_all[p]["direct"]
-                # + (옵션) 시 단위 내부 구·출장소
-                for city, gu_list in provinces_all[p]["city"].items():
-                    sub_opts.extend([f"{city} {g}" for g in gu_list])
-
-                chosen = st.multiselect(f"  {p}", sub_opts, key=f"ms_{p}")
-                preferred_regions[p] = chosen
-
+        provinces_all = json.loads(regions_path.read_text(encoding="utf-8"))
+    
+        # Check if provinces_all is a dictionary or a list
+        if isinstance(provinces_all, dict):
+            # If it's a dictionary, use the grouping logic:
+            selected_provinces = st.multiselect(
+                "선호 시/도 선택 (다중)",
+                list(provinces_all.keys()),
+                placeholder="예: 서울특별시, 경기도 …",
+            )
+    
+            preferred_regions = {}
+            if selected_provinces:
+                st.markdown("##### 세부 시·군·구 선택")
+                for p in selected_provinces:
+                    sub_opts = provinces_all[p]["direct"].copy()
+                    # Include detailed options from city sub-groups, if any:
+                    for city, gu_list in provinces_all[p]["city"].items():
+                        sub_opts.extend([f"{city} {g}" for g in gu_list])
+    
+                    chosen = st.multiselect(f"  {p}", sub_opts, key=f"ms_{p}")
+                    preferred_regions[p] = chosen
+        else:
+            # If provinces_all is a list, simply use a multiselect with the list
+            preferred_regions = st.multiselect(
+                "선호 지역 선택 (다중)",
+                provinces_all,
+                placeholder="예: 강릉시, 거제시, …"
+            )
     # ---------- 저장 ----------
     if st.button("저장", type="primary"):
         if not email:
@@ -148,7 +155,7 @@ if not (uid and nid):
             "facility_er": has_er,
             "facility_mart": has_mart,
             # 선호 지역
-            "preferred_regions": preferred_regions,
+            "preferred_regions": preferred_regions[0:2],
         })
         st.success(f"✅ 저장 완료! User ID: {uid}")
         st.stop()
