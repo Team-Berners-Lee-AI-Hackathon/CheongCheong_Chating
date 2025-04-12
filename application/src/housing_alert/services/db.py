@@ -35,4 +35,4 @@ def get_notice(notice_id: str) -> Optional[Dict[str, Any]]:
 
 # ---------- Notice ----------
 def get_notifications(user_id: str) -> Optional[Dict[str, Any]]:
-    
+    pass
