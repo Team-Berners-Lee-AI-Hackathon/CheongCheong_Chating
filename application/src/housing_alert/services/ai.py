@@ -38,6 +38,7 @@ def bedrock_chat(user_query: str) -> str:
                 "type": "KNOWLEDGE_BASE",
                 "knowledgeBaseConfiguration": {
                     "knowledgeBaseId": "SUAWIGMKPU",
+                    "modelArn": "arn:aws:bedrock:us-east-1:730335373015:foundation-model/anthropic.claude-3-5-sonnet-20240620-v1",
                     "retrievalConfiguration": {
                         "vectorSearchConfiguration": {
                             "numberOfResults": 1
