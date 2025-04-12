@@ -69,7 +69,7 @@ if not (uid and nid):
 
     # ---------- ② 경제 정보 ----------
     with st.expander("② 경제 정보"):
-        income = st.number_input("★ 월 소득(만원) (세전)", 0, step=100)
+        income = st.number_input("월 소득(만원) (세전)", 0, step=100)
         total_assets = st.number_input("총 자산(만원)", 0, step=100)
         own_house = st.radio("주택 보유", ["무주택", "자가 보유"], horizontal=True)
         own_car = st.checkbox("자가용 보유")
@@ -78,7 +78,7 @@ if not (uid and nid):
 
     # ---------- ③ 거주·선호 ----------
     with st.expander("③ 거주·선호"):
-        residence = st.text_input("★ 현재 거주지 (시/도)")
+        residence = st.text_input("현재 거주지 (시/도)")
         preferred_area = st.number_input(
             "선호 전용면적(㎡)", 0.0, step=1.0, format="%.1f"
         )
@@ -141,6 +141,11 @@ if not (uid and nid):
         if not email:
             st.error("이메일은 필수입니다.")
             st.stop()
+        if not birth:
+            st.error("생년월일은 필수입니다.")
+            st.stop()
+        
+
 
         # Normalize preferred regions: remove the trailing "시" if present.
         if isinstance(preferred_regions, dict):
