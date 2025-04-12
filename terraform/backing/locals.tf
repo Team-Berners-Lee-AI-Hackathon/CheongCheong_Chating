@@ -1,5 +1,7 @@
 locals {
   pjt    = "ai-hackerthon"
   region = "ap-northeast-2"
-  tfstate_bucket_name = "ai-hackerthon-tfstate-bucket"
-} 
+
+
+  pdf_info_table_name = "${local.pjt}-pdf-info-table"
+}
