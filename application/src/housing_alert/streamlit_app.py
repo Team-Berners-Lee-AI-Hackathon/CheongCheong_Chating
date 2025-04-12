@@ -1,10 +1,8 @@
-"""Streamlit entrypoint – Housing Alert AI (clean UI)"""
-
 import streamlit as st
 from uuid import uuid4
 import logging, logging.handlers, os, json, pathlib
 
-from housing_alert.services import db, storage, ai
+from housing_alert.services import db, ai
 
 import logging
 import logging.handlers
