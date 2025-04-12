@@ -42,20 +42,38 @@ def bedrock_chat(user_query: str, user_detail) -> str:
     try:
         resp = brt.retrieve_and_generate(
             input={"text": user_query},
-            retrieveAndGenerateConfiguration={
-                "type": "KNOWLEDGE_BASE",
-                "knowledgeBaseConfiguration": {
-                    "knowledgeBaseId": "SUAWIGMKPU",
-                    "modelArn": "arn:aws:bedrock:us-east-1:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
-                    "retrievalConfiguration": {
-                        "vectorSearchConfiguration": {"numberOfResults": 1}
-                    },
-                    "generationConfiguration": {
-                        "promptTemplate": {"textPromptTemplate": f"{user_detail}+{custom_prompt}"}
+            # retrieveAndGenerateConfiguration={
+            #     "type": "KNOWLEDGE_BASE",
+            #     "knowledgeBaseConfiguration": {
+            #         "knowledgeBaseId": "SUAWIGMKPU",
+            #         "modelArn": "arn:aws:bedrock:us-east-1:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
+            #         "retrievalConfiguration": {
+            #             "vectorSearchConfiguration": {"numberOfResults": 1}
+            #         },
+            #         "generationConfiguration": {
+            #             "promptTemplate": {"textPromptTemplate": f"{user_detail}+{custom_prompt}"}
 
+            #         }
+            #     },
+            # },
+            retrieveAndGenerateConfiguration={
+                "type": "EXTERNAL_SOURCES",
+                "externalSourcesConfiguration": {
+                    'externalSourcesConfiguration': {
+                        'modelArn': 'arn:aws:bedrock:us-east-1:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0',
+                        'sources': [
+                            {
+                                "sourceType": "S3",
+                                "s3Location": {
+                                    "uri": "s3://minerva-1-pdf-bucket/b6483633-2e88-4cff-a216-90d482067340.pdf"
+                                }
+                            }
+                        ]
                     }
-                },
+                }
             },
+            # modelArn=f"arn:aws:bedrock:{BEDROCK_REGION}:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
+            modelArn=f"arn:aws:bedrock:{BEDROCK_REGION}:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
         )
         print(f"resp => {resp}")
         return resp.get("output", {}).get("text", "[빈 응답]")
