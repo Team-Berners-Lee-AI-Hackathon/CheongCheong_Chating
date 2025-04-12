@@ -205,7 +205,7 @@ else:
         st.session_state.messages.append({"role":"user","content":q})
         with st.chat_message("user"): st.markdown(q)
 
-        a = ai.bedrock_chat([{"role":"user","content":q}])
+        a = ai.bedrock_chat(q)
 
         st.session_state.messages.append({"role":"assistant","content":a})
         with st.chat_message("assistant"): st.markdown(a)
