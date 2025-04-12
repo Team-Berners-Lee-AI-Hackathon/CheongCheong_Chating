@@ -35,7 +35,7 @@ def _claude_prompt(user_text: str) -> str:
 # """
 
 prompt_template = """
-Use the following search results and user details to provide a clear, detailed, and definitive answer to the user's question. Do not provide vague or ambiguous responses; only answer if you are certain based on the provided data. Take the time to fully analyze the information before answering. You are a housing application evaluator responsible for comparing the user’s details with the housing notice information.
+Use the following search results, notice details, and user details to provide a clear, detailed, and definitive answer to the user's question. Do not provide vague or ambiguous responses; only answer if you are certain based on the provided data. Take the time to fully analyze the information before answering. You are a housing application evaluator responsible for comparing the user’s details with the housing notice information.
 
 User details:
 - birth: User's date of birth.
@@ -54,6 +54,7 @@ User details:
 
 Instructions:
 1. Thoroughly analyze the search results provided below.
+1.1. **Priority Rule:** If there is conflicting information between the search results and the notice details, always prioritize and base your answer on the data from the search results.
 2. Cross-reference the search results with the user details.
 3. Provide a precise and well-researched answer to the question.
 4. Use concrete data and evidence from the search results.
@@ -64,7 +65,6 @@ Instructions:
     - Ranking or highlighting the most influential criteria if applicable.
 7. In all responses, conclude with a brief summary that reiterates the main reasons for eligibility.
 8. If any information appears missing or inconsistent, note that additional details could further strengthen the evaluation.
-
 
 Search Results:
 $search_results$
@@ -98,7 +98,7 @@ def bedrock_chat(user_query: str, user_detail, notice_detail) -> str:
                         "vectorSearchConfiguration": {"numberOfResults": 1}
                     },
                     "generationConfiguration": {
-                        "promptTemplate": {"textPromptTemplate": f"{user_detail}+{custom_prompt}"}
+                        "promptTemplate": {"textPromptTemplate": f"{notice_detail}+{user_detail}+{custom_prompt}"}
 
                     }
                 },
