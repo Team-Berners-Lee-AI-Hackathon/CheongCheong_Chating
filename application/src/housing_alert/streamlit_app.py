@@ -10,7 +10,7 @@ st.set_page_config(page_title="Housing Alert", page_icon="🏠",
 # ------------------ Query params ----------------
 params = st.query_params
 uid  = params.get("user_id", [None])[0]
-nid  = params.get("notice_id", [None])[0]
+nid  = params.get("id", [None])[0]
 # ------------------------------------------------
 
 # 전국 시·군·구 사전 예시 ─ 실제 서비스에선 S3·로컬 JSON 로드 권장
