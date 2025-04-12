@@ -22,6 +22,7 @@ def save_user(user: Dict[str, Any]) -> None:
 def get_user(user_id: str) -> Optional[Dict[str, Any]]:
     try:
         resp = user_table.get_item(Key={"user_id": user_id})
+        print(resp)
         return resp.get("Item")
     except ClientError as e:
         print("DynamoDB get_user error", e)

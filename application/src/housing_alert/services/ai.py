@@ -9,44 +9,58 @@ log = logging.getLogger(__name__)
 # ---------- Bedrock ---------- #
 # BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
 BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
-MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-7-sonnet-20250219-v1:0"
+MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-5-sonnet-20240620-v1:0"
 
 try:
     import boto3
 
-    brt = boto3.client("bedrock-runtime", region_name=BEDROCK_REGION)
+    # Knowledge Bases 클라이언트로 변경
+    brt = boto3.client("bedrock-agent-runtime", region_name=BEDROCK_REGION)
 except Exception as e:
-    log.exception("Bedrock client 초기화 실패")
+    log.exception("Bedrock 클라이언트 초기화 실패")
     brt = None
 
 
 def _claude_prompt(user_text: str) -> str:
     return f"\n\nHuman: {user_text}\n\nAssistant:"
 
+# 사용자 정의 프롬프트 템플릿
+prompt_template = """
+Use the following search results and user detail to answer the user's question:
+$search_results$
+$user_detail$
 
-def bedrock_chat(messages: List[Dict[str, str]]) -> str:
+Question: $question$
+Answer:
+"""
+
+def bedrock_chat(user_query: str, user_detail) -> str:
+    custom_prompt = prompt_template.format(user_detail=user_detail)
     if not brt:
         return "[Bedrock 연결 안 됨]"
-
-    body = json.dumps({
-        "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 1024,
-        "messages": messages,
-        "temperature": 0.7,
-        "top_p": 0.9,
-    })
-
+    
     try:
-        resp = brt.invoke_model(
-            modelId=MODEL_ID,
-            body=body,
-            accept="application/json",
-            contentType="application/json",
+        resp = brt.retrieve_and_generate(
+            input={"text": user_query},
+            retrieveAndGenerateConfiguration={
+                "type": "KNOWLEDGE_BASE",
+                "knowledgeBaseConfiguration": {
+                    "knowledgeBaseId": "SUAWIGMKPU",
+                    "modelArn": "arn:aws:bedrock:us-east-1:730335373015:inference-profile/anthropic.claude-3-5-sonnet-20240620-v1:0",
+                    "retrievalConfiguration": {
+                        "vectorSearchConfiguration": {"numberOfResults": 1}
+                    },
+                    "generationConfiguration": {
+                        "promptTemplate": {"textPromptTemplate": custom_prompt}
+
+                    }
+                },
+            },
         )
         data = json.loads(resp["body"].read())
-        return data.get("content", [{}])[0].get("text", "[빈 응답]")
+        return data.get("output", {}).get("text", "[빈 응답]")
     except Exception as e:
-        log.exception("Bedrock invoke_model 실패")
+        log.exception("Bedrock Knowledge Base 호출 실패")
         return f"[Bedrock Error] {e}"
 
 
