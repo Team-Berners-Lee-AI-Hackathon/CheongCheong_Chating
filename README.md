@@ -1,4 +1,4 @@
-# 🏠 Housing Alert AI
+# 🏠 New Housing Drawing Notification AI
 
 A smart notifier for youth housing applications.  
 Get alerts only for the applications you're eligible for, and ask questions using GenAI (Bedrock / Upstage).
