@@ -114,7 +114,7 @@ if not (uid and nid):
                         sub_opts.extend([f"{city} {g}" for g in gu_list])
     
                     chosen = st.multiselect(f"  {p}", sub_opts, key=f"ms_{p}")
-                    preferred_regions[p] = chosen[0:-1]
+                    preferred_regions[p] = chosen[:-1]
         else:
             # If provinces_all is a list, simply use a multiselect with the list
             preferred_regions = st.multiselect(
