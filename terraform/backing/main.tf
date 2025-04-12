@@ -24,3 +24,7 @@ resource "aws_dynamodb_table" "user_info" {
   }
 
 }
+
+resource "aws_s3_bucket" "pdf_bucket" {
+  bucket = "${local.pjt}-pdf-bucket"
+}

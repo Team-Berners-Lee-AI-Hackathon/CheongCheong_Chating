@@ -1,13 +1,6 @@
-locals {
-  pdf_processor_zip = "${path.module}/functions/pdf_processor/dst/lambda_function.zip"
-  notifier_zip      = "${path.module}/functions/notifier/dst/lambda_function.zip"
-}
-
-data "archive_file" "pdf_processor" {
-  type        = "zip"
-  source_dir  = "${path.module}/functions/pdf_processor/src"
-  output_path = local.pdf_processor_zip
-}
+#########################################################
+# pdf 프로세싱 람다
+#########################################################
 
 resource "aws_lambda_function" "pdf_processor" {
   filename         = local.pdf_processor_zip
@@ -36,12 +29,27 @@ resource "aws_lambda_permission" "allow_s3" {
   source_arn    = aws_s3_bucket.pdf_bucket.arn
 }
 
-data "archive_file" "notifier" {
-  type        = "zip"
-  source_dir  = "${path.module}/functions/notifier/src"
-  output_path = local.notifier_zip
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = data.terraform_remote_state.backing.outputs.pdf_bucket_id
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.pdf_processor.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_suffix       = ".pdf"
+  }
 }
 
+resource "aws_lambda_event_source_mapping" "dynamodb_stream" {
+  event_source_arn  = data.terraform_remote_state.backing.outputs.pdf_info_stream_arn
+  function_name     = aws_lambda_function.notifier.arn
+  starting_position = "LATEST"
+
+  batch_size                         = 1
+  maximum_batching_window_in_seconds = 10
+}
+
+#########################################################
+# notification 람다
+#########################################################
 resource "aws_lambda_function" "notifier" {
   filename         = local.notifier_zip
   function_name    = "${local.pjt}-notifier"
@@ -55,11 +63,3 @@ resource "aws_lambda_function" "notifier" {
   ]
 }
 
-resource "aws_lambda_event_source_mapping" "dynamodb_stream" {
-  event_source_arn  = aws_dynamodb_table.pdf_info.stream_arn
-  function_name     = aws_lambda_function.notifier.arn
-  starting_position = "LATEST"
-
-  batch_size                         = 1
-  maximum_batching_window_in_seconds = 10
-}
