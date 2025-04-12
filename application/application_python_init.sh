@@ -49,7 +49,7 @@ ln -s /usr/local/poetry/bin/poetry /usr/local/bin/poetry
 cat > .env <<'EOF'
 AWS_REGION=us-east-1
 BEDROCK_REGION=us-east-1
-BEDROCK_MODEL_ID=anthropic.claude-v2
+BEDROCK_MODEL_ID=anthropic.claude-3-7-sonnet-20250219-v1:0
 UPSTAGE_API_KEY=replace_me
 S3_BUCKET=minerva-1-pdf-bucket
 DYNAMO_USER_TABLE=minerva-1-user-info-table

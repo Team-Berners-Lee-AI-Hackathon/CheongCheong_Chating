@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 # ---------- Bedrock ---------- #
 # BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
 BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
-MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-v2"
+MODEL_ID = settings.BEDROCK_MODEL_ID or "anthropic.claude-3-7-sonnet-20250219-v1:0"
 
 try:
     import boto3
