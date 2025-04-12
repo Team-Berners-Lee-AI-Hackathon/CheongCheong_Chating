@@ -1,66 +1,66 @@
-"""Streamlit entrypoint – Housing Alert AI"""
-
+"""Streamlit entrypoint – Housing Alert AI (clean UI)"""
 import streamlit as st
 from uuid import uuid4
+from housing_alert.services import db, storage, ai
 
-from housing_alert.services import db, storage, ai   # ← 중복 import 제거
+# ────────────────────────────────────────────────
+st.set_page_config(page_title="Housing Alert", page_icon="🏠",
+                   layout="wide", initial_sidebar_state="collapsed")
 
-st.set_page_config(page_title="Housing Alert", page_icon="🏠", layout="wide")
-
-# ------------------ Query‑params ------------------
+# ------------------ Query params ----------------
 params = st.query_params
-_first = lambda v: v[0] if isinstance(v, list) else v
-user_id   = _first(params.get("user_id")) if params.get("user_id") else None
-notice_id = _first(params.get("notice_id")) if params.get("notice_id") else None
-# --------------------------------------------------
+uid  = params.get("user_id", [None])[0]
+nid  = params.get("notice_id", [None])[0]
+# ------------------------------------------------
 
-# ==================================================
-# 1) No query‑params  → User‑registration page
-# 2) Both params set  → Q&A page
-# ==================================================
+# 전국 시·군·구 사전 예시 ─ 실제 서비스에선 S3·로컬 JSON 로드 권장
+# provinces = {"서울특별시": ["강남구","강동구",...], "경기도": ["수원시","성남시",...], ...}
+import json, pathlib
+provinces = json.loads(pathlib.Path("korea_regions.json").read_text())  # 17개 시·도 · 250여 시·군·구
 
-if not (user_id and notice_id):
-    # ---------- 사용자 등록 ----------
+# =================================================
+# 1) 등록 페이지
+# =================================================
+if not (uid and nid):
     st.title("🏠 청년 주택청약 알림 – 사용자 등록")
-    st.markdown(
-        "청약 자격·우선순위 계산을 위해 기본 정보를 입력하세요. _(★ 표시는 필수)_"
-    )
+    st.caption("★ 는 필수 입력")
 
-    with st.form("user_form"):
-        # ───────── 기본 정보 ─────────
-        email  = st.text_input("★ 이메일", placeholder="you@example.com")
-        birth  = st.date_input("★ 생년월일")
-        gender = st.selectbox("성별 (선택)", ["미선택", "남성", "여성", "기타"])
+    # ---------- ① 기본 정보 ----------
+    with st.expander("① 기본 정보", expanded=True):
+        colA, colB = st.columns(2)
+        with colA:
+            email  = st.text_input("★ 이메일", placeholder="you@example.com")
+            birth  = st.date_input("★ 생년월일")
+        with colB:
+            gender = st.selectbox("성별 (선택)", ["미선택", "남성", "여성", "기타"])
+            is_student = st.checkbox("현재 대학(원) 재학·휴학 중")
 
-        # ───────── 경제 정보 ─────────
-        income        = st.number_input("★ 연 소득(만원)", min_value=0, step=100)
-        total_assets  = st.number_input("총 자산(만원)", min_value=0, step=100)
-        own_house     = st.selectbox("자택 보유 여부", ["무주택", "자가 보유"])
+    # ---------- ② 경제 정보 ----------
+    with st.expander("② 경제 정보"):
+        income        = st.number_input("★ 연 소득(만원)", 0, step=100)
+        total_assets  = st.number_input("총 자산(만원)", 0, step=100)
+        own_house     = st.radio("주택 보유", ["무주택", "자가 보유"], horizontal=True)
         own_car       = st.checkbox("자가용 보유")
-        car_value     = (
-            st.number_input("차량 가액(만원)", min_value=0, step=100) if own_car else 0
-        )
-        saving_count  = st.number_input("청약 통장 납입 횟수", min_value=0, step=1)
+        car_value     = st.number_input("차량 가액(만원)", 0, step=100, disabled=not own_car)
+        saving_count  = st.number_input("청약통장 납입 횟수", 0, step=1)
 
-        # ───────── 거주·선호 ─────────
+    # ---------- ③ 거주·선호 ----------
+    with st.expander("③ 거주·선호"):
         residence      = st.text_input("★ 현재 거주지 (시/도)")
-        preferred_area = st.number_input(
-            "선호 전용면적(㎡)", min_value=0.0, step=1.0, format="%.2f"
-        )
+        preferred_area = st.number_input("선호 전용면적(㎡)", 0.0, step=1.0, format="%.1f")
 
-        st.markdown("#### 💰 Budget")
-        col_jeonse, col_rent = st.columns(2)
-        with col_jeonse:
-            budget_jeonse  = st.number_input("전세 예산(만원)", min_value=0, step=500)
-            budget_deposit = st.number_input("보증금 예산(만원)", min_value=0, step=100)
-        with col_rent:
-            budget_monthly = st.number_input("월세 예산(만원)", min_value=0, step=5)
+        st.markdown("##### 💰 예산")
+        colJ, colR = st.columns(2)
+        with colJ:
+            budget_jeonse  = st.number_input("전세 예산(만원)", 0, step=500)
+            budget_deposit = st.number_input("보증금(만원)", 0, step=100)
+        with colR:
+            budget_monthly = st.number_input("월세 예산(만원)", 0, step=5)
 
-        # ───────── 역세권 여부 ─────────
-        near_subway = st.checkbox("역세권(도보 10분 이내)")
+        near_subway = st.checkbox("역세권(도보 10분)")
 
-        # ───────── 근처 편의시설 ─────────
-        st.markdown("#### 🏪 Nearby Facilities (선택)")
+    # ---------- ④ 편의시설 ----------
+    with st.expander("④ 근처 편의시설(선택)"):
         col1, col2 = st.columns(2)
         with col1:
             has_gym  = st.checkbox("헬스장")
@@ -69,86 +69,105 @@ if not (user_id and notice_id):
             has_er   = st.checkbox("응급실")
             has_mart = st.checkbox("대형마트")
 
-        submitted = st.form_submit_button("저장")
+    # ---------- ⑤ 선호 지역(다중) ----------
+    with st.expander("⑤ 선호 지역(복수 선택)", expanded=False):
+        # ❶ 전국 시·도·군·구 로드
+        import json, pathlib
+        regions_path = pathlib.Path("korea_regions.json")   # ← JSON 경로
+        provinces_all = json.loads(regions_path.read_text())
 
-    if submitted:
+        # ❷ 시·도 다중 선택
+        selected_provinces = st.multiselect(
+            "선호 시/도 선택 (다중)",
+            list(provinces_all.keys()),
+            placeholder="예: 서울특별시, 경기도 …",
+        )
+
+        # ❸ 시/군/구 다중 선택 (선택된 시·도에 대해)
+        preferred_regions = {}
+        if selected_provinces:
+            st.markdown("##### 세부 시·군·구 선택")
+            for p in selected_provinces:
+                sub_opts = provinces_all[p]["direct"]
+                # + (옵션) 시 단위 내부 구·출장소
+                for city, gu_list in provinces_all[p]["city"].items():
+                    sub_opts.extend([f"{city} {g}" for g in gu_list])
+
+                chosen = st.multiselect(f"  {p}", sub_opts, key=f"ms_{p}")
+                preferred_regions[p] = chosen
+
+    # ---------- 저장 ----------
+    if st.button("저장", type="primary"):
         if not email:
             st.error("이메일은 필수입니다.")
             st.stop()
 
-        user_id = str(uuid4())
-        db.save_user(
-            {
-                "user_id": user_id,
-                "email": email,
-                "birth": birth.isoformat(),
-                "gender": gender if gender != "미선택" else None,
-                # 경제 정보
-                "annual_income": int(income),
-                "total_assets": int(total_assets),
-                "own_house": own_house,
-                "own_car": own_car,
-                "car_value": int(car_value) if own_car else None,
-                "saving_count": int(saving_count),
-                # 거주·선호
-                "residence": residence,
-                "preferred_area": float(preferred_area),
-                # 예산 세분화
-                "budget_jeonse": int(budget_jeonse),
-                "budget_deposit": int(budget_deposit),
-                "budget_monthly": int(budget_monthly),
-                # 역세권 + 편의시설
-                "near_subway": near_subway,
-                "facility_gym": has_gym,
-                "facility_park": has_park,
-                "facility_er": has_er,
-                "facility_mart": has_mart,
-            }
-        )
-        st.success("✅ 저장되었습니다! 이메일로 인증 링크가 발송됩니다.")
-        st.write(f"**User ID:** `{user_id}` (개발 중 표시)")
+        uid = str(uuid4())
+        db.save_user({
+            "user_id": uid,
+            "email": email,
+            "birth": birth.isoformat(),
+            "gender": gender if gender != "미선택" else None,
+            "is_student": is_student,
+            # 경제
+            "annual_income": int(income),
+            "total_assets": int(total_assets),
+            "own_house": own_house,
+            "own_car": own_car,
+            "car_value": int(car_value) if own_car else None,
+            "saving_count": int(saving_count),
+            # 거주·선호
+            "residence": residence,
+            "preferred_area": float(preferred_area),
+            "budget_jeonse": int(budget_jeonse),
+            "budget_deposit": int(budget_deposit),
+            "budget_monthly": int(budget_monthly),
+            "near_subway": near_subway,
+            # 편의시설
+            "facility_gym": has_gym,
+            "facility_park": has_park,
+            "facility_er": has_er,
+            "facility_mart": has_mart,
+            # 선호 지역
+            "preferred_regions": preferred_regions,
+            "preferred_provinces": selected_provinces,
+        })
+        st.success(f"✅ 저장 완료! User ID: {uid}")
         st.stop()
 
+# =================================================
+# 2) Q&A 페이지
+# =================================================
 else:
-    # ---------- Q&A 화면 ----------
-    user   = db.get_user(user_id)
-    notice = db.get_notice(notice_id)
-
+    user   = db.get_user(uid)
+    notice = db.get_notice(nid)
     if not (user and notice):
         st.error("사용자 또는 공고 정보를 찾을 수 없습니다.")
         st.stop()
 
-    st.title(f"🏠 {notice.get('title', '청약 공고')} – Q&A")
+    st.title(f"🏠 {notice.get('title','청약 공고')} – Q&A")
 
     if notice.get("pdf_s3_key"):
-        pdf_url = storage.create_presigned_url(notice["pdf_s3_key"])
-        if pdf_url:
-            st.markdown(f"[📄 공고문 PDF 다운로드]({pdf_url})")
+        url = storage.create_presigned_url(notice["pdf_s3_key"])
+        st.markdown(f"[📄 PDF 다운로드]({url})")
 
     if notice.get("source_url"):
-        st.markdown(f"[🌐 원문 사이트로 이동]({notice['source_url']})")
+        st.markdown(f"[🌐 원문 보기]({notice['source_url']})")
 
-    st.markdown("---")
+    st.divider()
     if "messages" not in st.session_state:
-        st.session_state["messages"] = []
+        st.session_state.messages = []
 
-    # 과거 메시지 출력
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+    for m in st.session_state.messages:
+        with st.chat_message(m["role"]): st.markdown(m["content"])
 
-    # 사용자 입력
-    prompt = st.chat_input("공고에 대해 궁금한 점을 물어보세요…")
-    if prompt:
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+    q = st.chat_input("공고에 대해 질문해 보세요…")
+    if q:
+        st.session_state.messages.append({"role":"user","content":q})
+        with st.chat_message("user"): st.markdown(q)
 
-        # --- Upstage → Bedrock fallback ---
-        answer = ai.upstage_qa(document=notice.get("ocr_text", ""), question=prompt)
-        if answer and answer.startswith("[Upstage Error"):
-            answer = ai.bedrock_chat([{"role": "user", "content": prompt}])
+        a = ai.upstage_qa(notice.get("ocr_text",""), q) \
+            or ai.bedrock_chat([{"role":"user","content":q}])
 
-        st.session_state.messages.append({"role": "assistant", "content": answer})
-        with st.chat_message("assistant"):
-            st.markdown(answer)
+        st.session_state.messages.append({"role":"assistant","content":a})
+        with st.chat_message("assistant"): st.markdown(a)
