@@ -71,7 +71,7 @@ def bedrock_chat(user_query: str, user_detail) -> str:
                 }
             },
             # modelArn=f"arn:aws:bedrock:{BEDROCK_REGION}:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
-            modelArn=f"arn:aws:bedrock:{BEDROCK_REGION}:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
+            # modelArn=f"arn:aws:bedrock:{BEDROCK_REGION}:730335373015:inference-profile/us.anthropic.claude-3-5-sonnet-20240620-v1:0",
         )
         print(f"resp => {resp}")
         return resp.get("output", {}).get("text", "[빈 응답]")
