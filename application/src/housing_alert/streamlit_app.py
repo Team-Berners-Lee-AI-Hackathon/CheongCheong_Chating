@@ -28,8 +28,8 @@ st.set_page_config(page_title="Housing Alert", page_icon="🏠",
 
 # ------------------ Query params ----------------
 params = st.query_params
-uid  = params.get("user_id", [None])
-nid  = params.get("id", [None])
+uid = params.get("user_id", None)
+nid = params.get("id", None)
 # ------------------------------------------------
 
 # 전국 시·군·구 사전 예시 ─ 실제 서비스에선 S3·로컬 JSON 로드 권장
@@ -56,7 +56,7 @@ if not (uid and nid):
 
     # ---------- ② 경제 정보 ----------
     with st.expander("② 경제 정보"):
-        income        = st.number_input("★ 연 소득(만원)", 0, step=100)
+        income        = st.number_input("★ 월 소득(만원) (세전)", 0, step=100)
         total_assets  = st.number_input("총 자산(만원)", 0, step=100)
         own_house     = st.radio("주택 보유", ["무주택", "자가 보유"], horizontal=True)
         own_car       = st.checkbox("자가용 보유")
@@ -129,7 +129,7 @@ if not (uid and nid):
             "gender": gender if gender != "미선택" else None,
             "is_student": is_student,
             # 경제
-            "annual_income": int(income),
+            "monthly_income": int(income),
             "total_assets": int(total_assets),
             "own_house": own_house,
             "own_car": own_car,
