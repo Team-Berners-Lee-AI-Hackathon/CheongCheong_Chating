@@ -24,6 +24,14 @@ except Exception as e:
 def _claude_prompt(user_text: str) -> str:
     return f"\n\nHuman: {user_text}\n\nAssistant:"
 
+# 사용자 정의 프롬프트 템플릿
+prompt_template = """
+Use the following search results to answer the user's question:
+{{searchresults}}
+
+Question: {{question}}
+Answer:
+"""
 
 def bedrock_chat(user_query: str) -> str:
     if not brt:
@@ -41,9 +49,7 @@ def bedrock_chat(user_query: str) -> str:
                         "vectorSearchConfiguration": {"numberOfResults": 1}
                     },
                     "generationConfiguration": {
-                        "promptTemplate": {
-                            "textPromptTemplate": "You are a helpful assistant. Answer the question based on the following search results. If the search results don't contain the answer, just say that you don't know.\n\nSearch Results: {searchResults}\n\nQuestion: {question}\n\nAnswer:"
-                        }
+                        "promptTemplate": {"textPromptTemplate": prompt_template}
                     }
                 },
             },
