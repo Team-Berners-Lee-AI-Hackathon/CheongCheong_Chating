@@ -18,7 +18,7 @@ class Settings:
     S3_BUCKET: str = os.getenv("S3_BUCKET", "housing-alert-notices")
 
     # Bedrock / Upstage
-    BEDROCK_MODEL_ID: str = os.getenv("BEDROCK_MODEL_ID", "anthropic.claude-v2")
+    BEDROCK_MODEL_ID: str = os.getenv("BEDROCK_MODEL_ID", "anthropic.claude-3-7-sonnet-20250219-v1:0")
     UPSTAGE_API_KEY: str = os.getenv("UPSTAGE_API_KEY", "")
 
 

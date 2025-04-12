@@ -1,5 +1,5 @@
 # ========================= services/ai.py =========================
-"""Bedrock & Upstage API 래퍼 – logging & 명시적 에러 반환."""
+"""Bedrock & Upstage API 래퍼 – logging & 명시적 에러 반환."""
 from typing import List, Dict
 import json, os, logging, requests
 from housing_alert.config import settings
@@ -28,15 +28,13 @@ def bedrock_chat(messages: List[Dict[str, str]]) -> str:
     if not brt:
         return "[Bedrock 연결 안 됨]"
 
-    prompt = _claude_prompt(messages[-1]["content"])
-    body = json.dumps(
-        {
-            "prompt": prompt,
-            "max_tokens_to_sample": 1024,
-            "temperature": 0.7,
-            "top_p": 0.9,
-        }
-    )
+    body = json.dumps({
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 1024,
+        "messages": messages,
+        "temperature": 0.7,
+        "top_p": 0.9,
+    })
 
     try:
         resp = brt.invoke_model(
@@ -46,7 +44,7 @@ def bedrock_chat(messages: List[Dict[str, str]]) -> str:
             contentType="application/json",
         )
         data = json.loads(resp["body"].read())
-        return data.get("completion", "[빈 응답]")
+        return data.get("content", [{}])[0].get("text", "[빈 응답]")
     except Exception as e:
         log.exception("Bedrock invoke_model 실패")
         return f"[Bedrock Error] {e}"
@@ -57,9 +55,9 @@ UPSTAGE_QA_URL = os.getenv("UPSTAGE_QA_ENDPOINT", "https://api.upstage.ai/v1/qa"
 
 
 def upstage_qa(document: str, question: str) -> str:
-    """Upstage 문서 QA – 예외·404 시 에러 문자열 반환."""
+    """Upstage 문서 QA – 예외·404 시 에러 문자열 반환."""
     if not settings.UPSTAGE_API_KEY:
-        return "[Upstage Error] API KEY 미설정"
+        return "[Upstage Error] API KEY 미설정"
 
     headers = {"Authorization": f"Bearer {settings.UPSTAGE_API_KEY}"}
     try:
