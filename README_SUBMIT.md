@@ -208,8 +208,8 @@ python -u {PROJECT_DIR}/test/crawler.py
 | Name        | Role               | GitHub                                             |
 |-------------|--------------------|----------------------------------------------------|
 | Bohyun Choi | Project Manager    | [@Brilly-Bohyun](https://github.com/Brilly-Bohyun) |
-| Jiwoo Kim   | Backend Developer  | [@WiseWoo](https://github.com/WiseWoo)             |
 | Woobin Hwang| AI Developer       | [@binhao22](https://github.com/binhao22)           |
+| Jiwoo Kim   | Backend Developer  | [@WiseWoo](https://github.com/WiseWoo)             |
 | Hoejung Kim | Backend Developer  | [@hjk1996](https://github.com/hjk1996)             |
 | Taeji Kim   | Frontend Developer | [@KKamJi98](https://github.com/KKamJi98)           |
 
