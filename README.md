@@ -3,33 +3,33 @@
 A smart notifier for youth housing applications.  
 Get alerts only for the applications you're eligible for, and ask questions using GenAI Bedrock.
 
-## Demo Image (User Input)
+## 🖼️ Demo Image (User Input)
 
 ![UserInput](imgs/user_input_demo.png)
 
 ---
 
-## Demo Image (Chatting)
+## 💬 Demo Image (Chatting)
 
 ![Chatting](imgs/chatting_demo.png)
 
 ---
 
-## Workflows
+## 🔄 Workflows
 
-### Crawling
+### 🤖 Crawling
 
 ![Crawling](imgs/crawling.png)
 
-### Notification
+### 🔔 Notification
 
 ![Notification](imgs/notification.png)
 
-### User Input
+### ⌨️ User Input
 
 ![User Input](imgs/user_input.png)
 
-### Chatting
+### 💬 Chatting
 
 ![Chatting](imgs/chatting.png)
 
