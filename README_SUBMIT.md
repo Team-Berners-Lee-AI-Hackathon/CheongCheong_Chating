@@ -110,7 +110,7 @@ This project was developed as part of the Document Based Application Hackathon. 
 
 ### 🔧 Setup & Installation
 
-```bash
+```shell
 ####################################
 ## Application Setup (AL2023 - AMD64)
 ####################################
@@ -169,7 +169,9 @@ poetry install --no-root
 export PYTHONPATH=$PWD/src
 nohup poetry run streamlit run src/housing_alert/streamlit_app.py \
   --server.port 8501 > /var/log/hackathon_app.log 2>&1 &
+```
 
+```shell
 ####################################
 ## Crawler Setup (AL2023 - AMD64)
 ####################################
