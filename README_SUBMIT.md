@@ -1,4 +1,4 @@
-# 🛠️ [New Housing Drawing Notification AI] #TODO 추가 필요
+# 🛠️ [HOME SWEET HOME]
 
 ### 📌 Overview
 
@@ -12,15 +12,29 @@ This project was developed as part of the Document Based Application Hackathon. 
 
 ### 🖼️ Demo / Screenshots
 
-- **User Input Interface**  
-  ![UserInput](imgs/user_input_demo.png)
-- **Chatting Interface**  
-  ![Chatting](imgs/chatting_demo.png)
-- **Workflow Diagrams**:  
-  - 🤖 Crawling: ![Crawling](imgs/crawling.png)  
-  - 🔔 Notification: ![Notification](imgs/notification.png)  
-  - ⌨️ User Input: ![User Input](imgs/user_input.png)  
-  - 💬 Chatting: ![Chatting](imgs/chatting.png)
+#### User Input Demo  
+
+![UserInput](imgs/user_input_demo.png)
+
+#### Chatting Demo  
+
+![Chatting](imgs/chatting_demo.png)
+
+#### 🤖 Crawling Diagram  
+
+![Crawling](imgs/crawling.png)  
+
+#### 🔔 Notification Diagram  
+
+![Notification](imgs/notification.png)  
+
+#### ⌨️ User Input Diagram  
+
+![User Input](imgs/user_input.png)  
+
+#### 💬 Chatting  
+
+![Chatting](imgs/chatting.png)
 
 ### 🧩 Tech Stack
 
@@ -32,8 +46,9 @@ This project was developed as part of the Document Based Application Hackathon. 
 - **Others**: SMTP Protocol for email notifications, AWS S3 for storage, AWS EventBridge for monitoring
 
 ### 🏗️ Project Structure
+
 ```
-📁 #TODO 추가필요
+📁 
 ├── application
 │   ├── application_python_init.sh
 │   ├── korea_regions.json
@@ -96,28 +111,86 @@ This project was developed as part of the Document Based Application Hackathon. 
 ### 🔧 Setup & Installation
 
 ```bash
-# Clone the repository: #TODO 수정필요
-git clone https://github.com/Team-Berners-Lee-AI-Hackathon/CheongCheong_Chating.git
-cd CheongCheong_Chating/application
+####################################
+## Application Setup (AL2023 - AMD64)
+####################################
+
+# Clone the repository
+git clone https://github.com/UpstageAI/cookbook/usecase/document-based-application/team-bernerslee.git
+cd team-bernerslee/application
 
 # Create the environment configuration file
 cat > .env <<'EOF'
-AWS_REGION=us-east-1
-BEDROCK_REGION=us-east-1
-BEDROCK_MODEL_ID=us.anthropic.claude-3-7-sonnet-20250219-v1:0
-S3_BUCKET=minerva-1-pdf-bucket
-DYNAMO_USER_TABLE=minerva-1-user-info-table
-DYNAMO_NOTICE_TABLE=minerva-1-pdf-info-table
+AWS_REGION={AWS_REGION}
+BEDROCK_REGION={BEDROCK_REGION}
+BEDROCK_MODEL_ID={BEDROCK_MODEL_ID}
+S3_BUCKET={S3_BUCKET_NAME}
+DYNAMO_USER_TABLE={DYNAMODB_USER_TABLE_NAME}
+DYNAMO_NOTICE_TABLE={DYNAMO_NOTICE_TABLE}
 EOF
 
-# Install dependencies
+# Virtual Environment Setup
+curl https://pyenv.run | bash
 
-poetry install
+cat << 'EOF' >> /root/.bashrc
+
+# Pyenv initialization
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+    # Initialize pyenv
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
+    # Initialize pyenv-virtualenv
+    eval "$(pyenv virtualenv-init -)"
+fi
+EOF
+
+export PYENV_ROOT="/root/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+pyenv install -s 3.12.0
+pyenv global 3.12.0
+
+python -m pip install --upgrade pip
+curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local/poetry python -
+ln -s /usr/local/poetry/bin/poetry /usr/local/bin/poetry
 
 # Run the Streamlit app
+sudo touch /var/log/hackathon_app.log
+sudo chmod 666 /var/log/hackathon_app.log
+
+poetry env use "$(pyenv which python)"
+poetry install --no-root
 
 export PYTHONPATH=$PWD/src
-poetry run streamlit run src/housing_alert/streamlit_app.py
+nohup poetry run streamlit run src/housing_alert/streamlit_app.py \
+  --server.port 8501 > /var/log/hackathon_app.log 2>&1 &
+
+####################################
+## Crawler Setup (AL2023 - AMD64)
+####################################
+
+# Init Setup
+sudo yum update -y
+sudo yum install -y wget unzip python3-pip
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+sudo yum install ./google-chrome-stable_current_x86_64.rpm -y
+sudo ln -s /usr/bin/google-chrome-stable /usr/bin/google-chrome
+
+# Chromedriver Setup
+wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/135.0.7049.84/linux64/chromedriver-linux64.zip
+unzip chromedriver-linux64.zip
+sudo mv chromedriver-linux64/chromedriver /usr/bin/chromedriver
+chmod +x /usr/bin/chromedriver
+
+pip3 install selenium --user
+
+python -u {PROJECT_DIR}/test/crawler.py
 ```
 
 ### 📁 Dataset & References
@@ -151,6 +224,3 @@ See the LICENSE file for more details.
 
 - Ensure that AWS credentials are properly configured via `~/.aws/credentials` or system environment variables.
 - For any issues or further details, please refer to the documentation in the `/docs` directory or contact the development team.
-
-#TODO 추가필요
-
