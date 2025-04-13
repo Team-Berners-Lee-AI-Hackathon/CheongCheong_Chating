@@ -47,8 +47,8 @@ This project was developed as part of the Document Based Application Hackathon. 
 
 ### 🏗️ Project Structure
 
-```
-📁 
+```bash
+📁 team-bernerslee
 ├── application
 │   ├── application_python_init.sh
 │   ├── korea_regions.json
