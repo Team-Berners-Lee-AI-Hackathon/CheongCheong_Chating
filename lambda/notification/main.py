@@ -115,6 +115,7 @@ def lambda_handler(event, context):
     # 건물 위치
     location = item.get("building_location")
     notice_name = item.get("notice_name")
+    notice_url = item.get("notice_url")
     announcement_id = item.get("id")
     print(f"location {location}")
     # 공급수
@@ -157,20 +158,23 @@ def lambda_handler(event, context):
                 <html>
                   <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
                     <div style="max-width: 600px; margin: auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-                      <h2 style="color: #333;">새로운 맞춤 청약 공고</h2>
+                      <h2 style="color: #333;">New Personalized Housing Announcement Notification</h2>
                       <p style="font-size: 16px; color: #555;">
-                        아래의 청약 공고가 당신의 조건과 일치합니다:
+                        The following housing announcement matches your preferences:
                       </p>
                       <p style="font-size: 18px; color: #000; font-weight: bold;">
                         {notice_name}
                       </p>
                       <div style="margin-top: 30px; text-align: center;">
+                        <a href="{notice_url}" style="display: inline-block; padding: 12px 25px; background-color: #2196F3; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-right: 10px;">
+                          View Announcement
+                        </a>
                         <a href="{chat_url}" style="display: inline-block; padding: 12px 25px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                          공고 보러가기
+                          Ask AI About This Announcement
                         </a>
                       </div>
                       <p style="font-size: 14px; color: #999; margin-top: 40px;">
-                        본 메일은 자동 발송되었습니다. 문의는 청청이 관리자에게 주세요.
+                        This email was sent automatically.
                       </p>
                     </div>
                   </body>
